@@ -1,0 +1,8 @@
+#!/bin/sh
+#
+# You can put here some personalized boot time settings
+#
+
+# For 1.6.3+ version of UrukDroid witch has DM as module..
+modprobe dm-mod
+
