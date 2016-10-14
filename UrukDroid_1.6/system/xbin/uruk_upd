@@ -1,0 +1,302 @@
+#!/bin/bash
+#
+# UrukDroid service system
+#
+#### Information
+#  Ver: 1.7 (02.01.2012)
+#   By: Adrian (Sauron) Siemieniak
+# Desc: Service used to update kernel and root filesystem
+####
+
+#set -xv
+
+# Cheking if we have file to process
+if [ "$1" = "" ]; then
+	exit
+fi
+
+upd_lock_file="/var/run/uruk_update.lock"
+upd_lock_count=10
+upd_lock_delay=15
+upd_file=$1
+upd_mkdir=mkdir
+upd_rm="rm"
+upd_echo="echo"
+#upd_echo="false"
+upd_log_dir="/var/lib/urukdroid/"
+upd_tmp_dir="/data/.tmp"
+
+# Show notification
+show_msg()
+{
+	msg1="$1"
+	msg2="$2"
+	msg3="$3"
+	/system/bin/am startservice -n urukConfig.nc/urukConfig.nc.comservice --es msg1 "$msg1" --es msg2 "$msg2" --es msg3 "$msg3" >/dev/null 2>&1 &
+#	pid=$!
+	sleep 1
+#	kill -9 $pid >/dev/null 2>&1
+}
+
+# Make sure pid is from active task
+check_real_lock(){
+	if [ -s $upd_lock_file ]; then
+		pid=`cat $upd_lock_file`
+		if [ `ls /proc | grep -c $pid` -lt 1 ]; then
+			rm $upd_lock_file
+		fi
+	fi
+}
+
+# Check if there is enough free space for FILE in DIRECTORY
+check_enough_space(){
+        file=$1
+        dir=$2
+
+        if [ ! -f $file -o ! -d $dir ]; then
+                echo "No dir or file to check free space"
+                return 2
+        fi
+
+        dir_byte_free=`df -P --block-size=1 $dir | grep -v Filesystem | grep % | awk '{print $4}'`
+        if [ `file $file | grep -c "gzip"` -ne 1 ]; then
+                # Sadly bzip2 cant report archive size - bummer :( - so we estimate...
+                update_byte_size=`ls -l $file | awk '{printf "%d\n",($5*1.2)}'`
+        else
+                update_byte_size=`gunzip -l $file | grep % | tail -1 | awk '{printf "%d\n",($5*1.01)}'`
+        fi
+
+        if [ $dir_byte_free -lt $update_byte_size ]; then
+                return 1
+        fi
+        return 0
+}
+
+# Let's make sure we are the only update process
+$upd_echo -n "UrukUpd: Waiting free lock ..."
+while [  $upd_lock_count -gt 0 ] ; do
+	if [ ! -s $upd_lock_file ]; then
+		echo $$ >$upd_lock_file
+		$upd_echo "Done"
+		# It's good time to do some cleanups...
+		$upd_rm -rf $upd_tmp_dir/* >/dev/null 2>&1
+		sync
+		break
+	fi
+	$upd_echo -n "."
+	sleep $upd_lock_delay
+	let upd_lock_count-=1
+	check_real_lock
+# If we failed to wait - exit...
+	if [ $upd_lock_count -eq 1 ]; then
+		exit
+	fi
+done
+
+
+# Remove /data/.tmp as a directory - 1.6 moves it to /sdcard/ as symlink
+if [ ! -L $upd_tmp_dir ]; then
+	$upd_rm -rf $upd_tmp_dir >/dev/null 2>&1
+	$upd_mkdir /sdcard/.tmp >/dev/null 2>&1
+	ln -s /sdcard/.tmp $upd_tmp_dir
+fi
+
+upd_tmp=`/usr/local/bin/mktemp -dp $upd_tmp_dir`
+upd_tmp=$upd_tmp/
+#upd_tmp="/data/.tmp/tmp.tzcUlQkDmE/"
+upd_tar=tar
+
+upd_descc=desc.cpt
+upd_desc=desc
+export upd_pw="ohPhahji0dephaph9eij"
+upd_crypt="/system/bin/ccrypt"
+upd_desc_type="desc/package.type"
+upd_desc_desc="desc/package.content"
+upd_date=`/usr/local/bin/date +"%s_%Y.%m.%d_%H:%M:%S"`
+
+upd_kernel_zimage="data/zImage"
+upd_kernel_initramfs="data/initramfs.cpio.gz"
+upd_kernel_flash="/usr/local/sbin/kd_flasher"
+
+upd_update_image="data/UrukDroid-rootfs-update.tgz"
+upd_upgrade_image="data/UrukDroid-rootfs-upgrade.tgz"
+upd_postinst="desc/package.postinst"
+upd_postinst_2stg="desc/package.postinst2stg"
+upd_preinst="desc/package.preinst"
+upg_upgrade_dir="/.upgrade"
+script_directory="/var/lib/urukdroid/post_scripts/"
+
+remove_dir_and_file(){
+# Log failure
+	error=$1
+# If error - log it...
+	if [ "$error" != "" ]; then
+		date=`date +%Y.%m.%d_%H:%M:%S |awk -F"\n" 'ORS="";{print $1}'`
+		echo "$date: Processing update package $upd_file failed: $error" >>/var/lib/urukdroid/update.fail
+		show_msg "UrukDroid modification FAILED!" "Installation of $upd_file FAILED!" "Error message: $error"
+	fi
+	$upd_rm -f $upd_file
+	$upd_rm -rf $upd_tmp
+	# Just to get rid of hanging am processes
+	pkill -9 app_process >/dev/null 2>&1
+	$upd_rm $upd_lock_file
+	exit
+}
+
+# Put Notification
+
+show_msg "Performing UrukDroid modification..." "UrukDroid modification in progress..." "Updating: $upd_file"
+#
+# Checking if it's proper file
+#
+if [ `file $upd_file | egrep -c "(gzip|bzip2)"` -lt 1 ]; then
+	$upd_echo "UrukUpd: Wrong file type"
+	remove_dir_and_file "Wrong file type. File is not an UrukDroid package or it's corrupted."
+fi
+
+#
+# Check space...
+#
+check_enough_space $upd_file "/mnt/storage"
+if [ $? -ne 0 ]; then
+	$upd_echo "UrukUpd: Not enought free space on /mnt/storage"
+	remove_dir_and_file "UrukUpd: Not enought free space on /mnt/storage"
+fi
+
+#
+# Decompressing files
+#
+$upd_echo -n "UrukUpd: Decompressing file...."
+if [ `file $upd_file | grep -c "bzip2"` -gt 0 ]; then
+	$upd_tar -jxf $upd_file -C $upd_tmp
+else
+	$upd_tar -zxf $upd_file -C $upd_tmp
+fi
+$upd_echo " Done"
+
+#
+# Veryfing file structure
+#
+$upd_echo "UrukUpd: Veryfing existance of signature file..."
+if [ ! -f $upd_tmp$upd_descc ]; then
+	$upd_echo "UrukUpd: (ERROR) No package description file..."
+	remove_dir_and_file "Package description missing"
+fi
+
+#
+# Validate signature
+#
+$upd_echo "UrukUpd: Veryfing signature..."
+$upd_crypt -q -d --envvar upd_pw $upd_tmp$upd_descc 2>/dev/null
+if [ $? -ne 0 ]; then
+	$upd_echo "UrukUpd: (ERROR) Veryfing signature failed"
+	remove_dir_and_file "Wrong signature"
+fi
+$upd_echo "UrukUpd: Extracting package description..."
+$upd_tar -xf $upd_tmp$upd_desc -C $upd_tmp 2>/dev/null
+
+#
+# Checking files...
+#
+$upd_echo "UrukUpd: Checking file integrity..."
+cd $upd_tmp"data/"
+md5sum --status -c ../desc/files.md5
+if [ $? -ne 0 ]; then
+        $upd_echo "UrukUpd: (ERROR) File checksum not correct"
+	remove_dir_and_file "Bad checksums of update files"
+fi
+cd - >/dev/null 2>&1
+
+#
+# Finding what type of update we are dealing with
+#
+upd_type=`head -1 "$upd_tmp$upd_desc_type"`
+
+$upd_echo "UrukUpd: Found $upd_type update package"
+
+case "$upd_type" in
+	kernel)
+# Check if we have proper files
+		if [ ! -f $upd_tmp$upd_kernel_zimage -o ! -f $upd_tmp$upd_kernel_initramfs ]; then
+			upd_echo "UrukUpd: (ERROR) Kernel update files missing"
+			remove_dir_and_file "Kernel update files missing"
+		fi
+		$upd_echo -n "UrukUpd: Processing kernel update...."
+		upd_logout=$upd_log_dir"kernel/"$upd_date
+		cat "$upd_tmp$upd_desc_desc" > "$upd_logout"
+		echo "--" >>"$upd_logout"
+		$upd_kernel_flash -k $upd_tmp$upd_kernel_zimage -i $upd_tmp$upd_kernel_initramfs >>"$upd_logout" 2>&1
+		echo "--" >>"$upd_logout"
+		$upd_echo "Done"
+		show_msg "UrukDroid kernel update finished!" "UrukDroid kernel update finished" "Update of $upd_file finished. You may now restart your device."
+		remove_dir_and_file
+		exit
+	;;
+	update)
+		$upd_echo "UrukUpd: Processing update..."
+		if [ ! -f $upd_tmp$upd_update_image ]; then
+                        $upd_echo "UrukUpd: (ERROR) Update file missing"
+                        remove_dir_and_file "Update file missing"
+                fi
+		sh $upd_tmp$upd_preinst
+		if [ $? -ne 0 ]; then
+			remove_dir_and_file "PreInstalation script failed $?"
+		fi
+		# We check if there is a place for update on /, if there is - dont extract...
+		check_enough_space "$upd_tmp$upd_update_image" "/"
+		if [ $? -eq 0 ]; then
+			if [ ! -d /.upgrade ]; then
+				mkdir /.upgrade
+			fi
+			$upd_echo "UrukUpd: Moving update file to /.upgrade/"
+			mv "$upd_tmp$upd_update_image" /.upgrade
+			if [ -f "$upd_tmp$upd_postinst_2stg" ]; then
+				mv "$upd_tmp$upd_postinst_2stg" $script_directory
+			fi
+			sync
+			show_msg "UrukDroid update stage 1 finished!" "UrukDroid update finished" "Update of $upd_file, stage 1 finished. You may now restart your device to finish update."
+		else
+			$upd_echo "UrukUpd: Extracting update..."
+			tar --overwrite -zxf $upd_tmp$upd_update_image -C /
+			upd_logout=$upd_log_dir"update/"$upd_date
+			cat $upd_tmp$upd_desc_desc > $upd_logout
+			sh $upd_tmp$upd_postinst
+			if [ $? -ne 0 ]; then
+				remove_dir_and_file "PostInstalation script failed (installation commited) $?"
+			fi
+			show_msg "UrukDroid update finished!" "UrukDroid update finished" "Update of $upd_file finished. You may now restart your device."
+		fi
+		remove_dir_and_file
+		exit
+	;;
+	upgrade)
+		$upd_echo "UrukUpd: Processing upgrade..."
+		if [ ! -f $upd_tmp$upd_upgrade_image ]; then
+                        $upd_echo "UrukUpd: (ERROR) Upgrade file missing"
+                        remove_dir_and_file "Upgrade file missing"
+                fi
+		sh $upd_tmp$upd_preinst
+		if [ $? -ne 0 ]; then
+			remove_dir_and_file "PreInstalation script failed $?"
+		fi
+		$upd_echo "UrukUpd: Extracting upgrade..."
+		$upd_mkdir $upg_upgrade_dir >/dev/null 2>&1
+		rm -f /cache/downloadfile* >/dev/null 2>&1
+		mv $upd_tmp$upd_upgrade_image $upg_upgrade_dir
+		upd_logout=$upd_log_dir"upgrade/"$upd_date
+		cat $upd_tmp$upd_desc_desc > $upd_logout
+		sh $upd_tmp$upd_postinst
+		if [ $? -ne 0 ]; then
+			remove_dir_and_file "PostInstalation script failed (commited anyway) $?"
+		fi
+		show_msg "UrukDroid first stage upgrade finished!" "UrukDroid upgrade finished" "Ugrade of $upd_file finished. After restart upgrade will be continued during boot."
+		remove_dir_and_file
+		exit
+	;;
+esac
+
+
+
+remove_dir_and_file "Unknown package type found ($upd_type) - erasing"
+
+rm $upd_lock_file

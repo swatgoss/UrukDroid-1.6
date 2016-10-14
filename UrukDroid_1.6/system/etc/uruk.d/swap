@@ -1,0 +1,115 @@
+#!/bin/sh
+#
+# UrukDroid service system
+#
+#### Information
+#  Ver: 1.4 (19.08.2011)
+#   By: Adrian (Sauron) Siemieniak
+# Desc: Start/stop swap memory file
+####
+
+URUKCONFIG=/etc/uruk.conf/swap
+
+. /etc/uruk.d/service-common.sh
+
+# This function should return in every status script
+# 1: service is running
+# 0: service is not running
+service_status(){
+	if [ "$swap_mem_file" != "" -a `grep -c "$swap_mem_file" /proc/swaps` -gt 0 ]; then
+		return 1
+	fi
+	if [ "$swap_mem_partition" != "" -a `grep -c "$swap_mem_partition" /proc/swaps` -gt 0 ]; then
+		return 1
+	fi
+	return 0
+}
+
+case "$1" in
+	start)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "Uruk-Swap: Swap memory is already on"
+			exit 1
+		fi
+
+		# Check wheter we use swap file or swap device
+		# If we use swap partition...
+		if [ "$swap_mem_partition" != "" -a -b "$swap_mem_partition" ]; then
+			echo -n "Uruk-Swap: Enabling swap memory on partition $swap_mem_partition... "
+			/usr/local/sbin/swapon -p 10 "$swap_mem_partition"
+			echo "Done."
+		fi
+
+		# If we use swap file
+		if [ "$swap_mem_file" != "" ]; then
+			# Checking if swap file exists and IS proper size
+			if [ -f $swap_mem_file -a ! `find $swap_mem_file -type f -size "$swap_mem_size"M 2>/dev/null| wc -l` -eq 1 ]; then
+				echo -n "Uruk-Swap: Found swap file but requested size difer - deleting... "
+				rm $swap_mem_file
+				echo "Done."
+			fi
+			# Checking if swap file exists
+			if [ ! -f $swap_mem_file ]; then
+				basedir=`dirname $swap_mem_file`
+				storage_free=`df -Pm $basedir|grep -v Filesystem|grep %| awk '{print $4}'`
+				if [ $swap_mem_size -gt $storage_free ]; then
+					echo "Uruk-Swap: not enought free space to create $swap_mem_size swap file"
+					exit 1
+				fi
+				echo -n "Uruk-Swap: creating new swap file, please wait... "
+				dd if=/dev/zero of=$swap_mem_file bs=1M count=$swap_mem_size >/dev/null 2>&1
+				/usr/local/sbin/mkswap $swap_mem_file >/dev/null 2>&1
+				echo "Done."
+			fi
+			size=`ls -lh $swap_mem_file| awk '{print $5}'`
+			echo -n "Uruk-Swap: Enabling $size swap memory... "
+			/usr/local/sbin/swapon -p 0 $swap_mem_file
+			echo "Done."
+		fi
+		sysctl -q -w vm.swappiness=$swap_mem_swappiness
+		;;
+	stop)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo -n "Uruk-Swap: Disabling swap memory..."
+			if [ "$swap_mem_partition" != "" ]; then
+				/usr/local/sbin/swapoff $swap_mem_partition
+				echo -n "$swap_mem_partition..."
+			fi
+			if [ "$swap_mem_file" != "" ]; then
+				/usr/local/sbin/swapoff $swap_mem_file
+				echo -n "$swap_mem_file..."
+			fi
+			echo "Done"
+		else
+			echo "Uruk-Swap: Service already disabled"
+			exit 1
+		fi
+		;;
+	status)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "Uruk-Swap: Enabled"
+		else
+			echo "Uruk-Swap: Disabled"
+		fi
+		;;
+	UIstatus)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "on"
+		else
+			echo "off"
+		fi
+		;;
+	stats)
+		cat /proc/swaps
+		;;
+	*|"")
+		echo "Uruk-Droid swap memory service"
+		echo "Usage: swap {start|stop|status}"
+		exit 1
+		;;
+esac
+

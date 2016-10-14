@@ -1,0 +1,20 @@
+# Part of Uruk-Droid Android configuration system
+#
+# ver. 1.0 (23.01.2011) Adrian (Sauron) Siemieniak
+#
+
+# 1 to enable this service
+# 0 to disable this service
+service_enabled=0
+
+# Maximum memory used for swap in KiB (default: 32MiB)
+# Min: 1
+# Max: device RAM
+compcache_memkb=32768
+# Pseude device used for swap (default: /dev/block/ramzswap0)
+compcache_dev1=/dev/block/ramzswap0
+# How eagerly kernel will swap memory, bigger=faster swapping (default: 60)
+# This value may be also overwritten by swap service (it's started later)
+# Min: 0
+# Max: 100
+compcache_swappiness=60

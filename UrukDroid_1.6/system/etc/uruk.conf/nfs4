@@ -1,0 +1,28 @@
+# Part of Uruk-Droid Android configuration system
+#
+# ver. 1.0 (15.02.2011) Adrian (Sauron) Siemieniak
+#
+
+# 1 to enable this service
+# 0 to disable this service
+service_enabled=0
+
+# Modules to load for basic iptable support
+nfs4_modules="nfs"
+nfs4_idmapd="/usr/local/sbin/rpc.idmapd"
+nfs4_portmap="/usr/local/sbin/portmap"
+
+# Stop SMB client before mounting nfs4
+nfs4_disable_smbc=1
+
+# Stop NDMP (djmount) before mounting nfs4
+nfs4_disable_ndmp=1
+
+# You may set this to mount volume during boot - but it's not required
+#nfs4_source="10.8.0.1:/dane/"
+nfs4_source="192.168.70.100:/dane/"
+#nfs4_mpoint="/mnt/storage/network/nfs/"
+nfs4_mpoint="/mnt/storage/network/smb/"
+
+# If you want to enable cachefiled (nfs local caching system)
+nfs4_cache_enable=1

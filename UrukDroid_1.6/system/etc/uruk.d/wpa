@@ -1,0 +1,81 @@
+#!/bin/sh
+#
+#### Information
+#  Ver: 1.3 (10.08.2011)
+#   By: Adrian (Sauron) Siemieniak
+# Desc: Swap between wpa_supplicant stock and Uruk one (witch support adhoc, but sometimes does not allow to add network)
+####
+
+URUKCONFIG=/etc/uruk.conf/wpa
+
+. /etc/uruk.d/service-common.sh
+
+change_to_stock(){
+	cd /system/bin/
+	rm $wpa_binary
+	ln -s $wpa_binary_stock $wpa_binary
+}
+
+change_to_uruk(){
+	cd /system/bin/
+	rm $wpa_binary
+	ln -s $wpa_binary_uruk $wpa_binary
+}
+
+# This function should return in every status script
+# 1: service is running
+# 0: service is not running
+service_status(){
+	if [ `ls -l "/system/bin/$wpa_binary" | grep -c -- "-omap"` -gt 0 ]; then
+		return 1
+	else
+		return 0
+	fi
+}
+
+case "$1" in
+	start)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "Uruk-WPA: WPA supplicant is already in Uruk version."
+			exit 1
+		else
+			echo -n "Uruk-WPA: Enabling Uruk WPA supplicant module..."
+			change_to_uruk
+			echo "Done"
+		fi
+		;;
+	stop)
+		service_status
+		if [ $? -ne 1 ]; then
+			echo "Uruk-WPA: WPA supplicant already in stock version."
+			exit 1
+		else
+			echo -n "Uruk-WPA: Disabling URUK WPA supplicant module..."
+			change_to_stock
+			echo "Done"
+		fi
+		;;
+	status)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "Uruk-WPA: Enabled"
+		else
+			echo "Uruk-WPA: Disabled"
+		fi
+		;;
+	UIstatus)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "on"
+		else
+			echo "off"
+		fi
+		;;
+	*|"")
+		echo "Uruk-Droid WPA supplicant service"
+		echo "Usage: wpa {start|stop|status}"
+		exit 1
+		;;
+esac
+

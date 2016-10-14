@@ -1,0 +1,9 @@
+# Part of Uruk-Droid Android configuration system
+#
+# ver. 1.1 (17.08.2011) Adrian (Sauron) Siemieniak
+#
+
+wpa_binary="wpa_supplicant"
+wpa_binary_uruk="wpa_supplicant-omap"
+wpa_binary_stock="wpa_supplicant-stock"
+

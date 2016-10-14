@@ -1,0 +1,13 @@
+#!/bin/sh
+
+umount="umount -f -v -r -d "
+filesystems="/mnt/storage/sdcard /data /"
+
+for filesystem in $filesystems; do
+	$umount $filesystem
+done
+
+sync
+
+mount -o remount,ro /
+

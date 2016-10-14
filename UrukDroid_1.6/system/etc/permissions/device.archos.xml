@@ -1,0 +1,9 @@
+<permissions>
+	<feature name="android.hardware.sensor.compass" />
+	<feature name="android.hardware.sensor.accelerometer" />
+	<feature name="android.hardware.touchscreen" />
+	<feature name="android.hardware.wifi" />
+	<feature name="com.google.android.feature.GOOGLE_PLUGIN" />
+	<feature name="android.hardware.location" />
+    <feature name="android.hardware.location.network" />
+</permissions>

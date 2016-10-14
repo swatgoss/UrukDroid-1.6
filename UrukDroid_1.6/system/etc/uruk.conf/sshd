@@ -1,0 +1,21 @@
+# Part of Uruk-Droid Android configuration system
+#
+# ver. 1.0 (14.01.2011) Adrian (Sauron) Siemieniak
+#
+
+# 1 to enable this service
+# 0 to disable this service
+service_enabled=0
+
+# SSH password for root login
+SSHD_PASS="UrukDroid"
+
+# Port number for SSHd to listen on
+SSHD_PORT=22
+
+# Other configuration
+CONFDIR=/etc/ssh/
+SSHD_RSA_KEY=$CONFDIR"dropbear_rsa_key"
+SSHD_DSS_KEY=$CONFDIR"dropbear_dss_key"
+SSHD_BANNER=$CONFDIR"banner.txt"
+SSHD_HOME="/root/"

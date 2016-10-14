@@ -1,0 +1,10 @@
+<permissions>
+	<feature name="android.software.live_wallpaper" />
+	<feature name="android.hardware.bluetooth" />
+	<feature name="android.hardware.camera" />
+	<feature name="android.hardware.touchscreen.multitouch" />	
+	<feature name="android.hardware.ram.256mo" />
+	<feature name="android.hardware.tvout" />
+	<feature name="android.hardware.location" />
+	<feature name="android.hardware.location.gps" />
+</permissions>

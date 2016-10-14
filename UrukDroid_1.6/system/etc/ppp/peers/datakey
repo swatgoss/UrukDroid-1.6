@@ -1,0 +1,35 @@
+linkname datakey
+mru 1280
+mtu 1280
+# dump
+# debug
+unit 1
+# connection
+# crtscts
+connect-delay 3000
+hide-password
+nodetach
+# peer parameters
+# noauth
+# lcp-echo-adaptive
+# lcp-echo-interval 30
+# lcp-echo-failure 3 
+# dns, routing
+ipcp-accept-remote
+ipcp-accept-local
+ipcp-max-failure 15
+defaultroute
+#nodefaultroute
+#replacedefaultroute # not currently supported by our pppd
+noipdefault
+usepeerdns
+# avoid compression
+novj
+novjccomp
+noccp
+nobsdcomp
+nopcomp
+noaccomp
+# connect scripts
+connect '/system/xbin/chat -v -s -t 3 -f /etc/chatscripts/datakey_start'
+disconnect '/system/xbin/chat -v -s -t 3 -f /etc/chatscripts/datakey_stop'

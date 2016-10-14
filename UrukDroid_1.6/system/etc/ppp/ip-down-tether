@@ -1,0 +1,5 @@
+#!/system/bin/sh
+
+/system/bin/setprop "net.$NAME.dns1" ""
+/system/bin/setprop "net.$NAME.dns2" "" 
+

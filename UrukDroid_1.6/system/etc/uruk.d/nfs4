@@ -1,0 +1,110 @@
+#!/bin/sh
+#
+#### Information
+#  Ver: 1.3 (17.08.2011)
+#   By: Adrian (Sauron) Siemieniak
+# Desc: Enable nessesary modules, deamons to use Network File System version 4 (aka NFS4).
+####
+
+URUKCONFIG=/etc/uruk.conf/nfs4
+
+. /etc/uruk.d/service-common.sh
+
+# This function should return in every status script
+# 1: service is running
+# 0: service is not running
+service_status(){
+	if [ `ps -e|grep -c rpc.idmapd` -gt 0 ]; then
+		return 1
+	else
+		return 0
+	fi
+}
+
+case "$1" in
+	start)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "Uruk-NFS4: Service is already running."
+			exit 1
+		fi
+		echo -n "Uruk-NFS4: Enabling NFS modules... "
+		modprobe -a $nfs4_modules
+		echo "Done"
+		echo -n "Uruk-NFS4: Startin portmap, rpc.idmapd... "
+		mount -t rpc_pipefs rpc_pipefs /var/lib/nfs/rpc_pipefs
+		start-stop-daemon --start --oknodo --quiet --exec $nfs4_portmap
+		start-stop-daemon --start --oknodo --quiet --exec $nfs4_idmapd -- -C
+		if [ $nfs4_disable_smbc -eq 1 ]; then
+			/system/bin/smb_stop.sh >/dev/null 2>&1
+			# Just make sure there is no cifs stuff also
+			umount `mount | grep "type cifs" | awk '{print $3}'` >/dev/null 2>&1
+		fi
+		if [ $nfs4_disable_ndmp -eq 1 ]; then
+			pkill djmount >/dev/null 2>&1
+		fi
+		echo "Done"
+		if [ $nfs4_source != "" ]; then
+			/usr/local/bin/mkdir -p $nfs4_mpoint >/dev/null 2>&1
+			echo -n "Uruk-NFS4: Mounting default resource... "
+			mount -t nfs4 -o soft,fsc $nfs4_source $nfs4_mpoint
+#			mount -t nfs4 -o soft $nfs4_source $nfs4_mpoint
+			echo "Done"
+		fi
+# Starting cachefile
+		if [ $nfs4_cache_enable -eq 1 ]; then
+			modprobe cachefiles
+			start-stop-daemon --start --oknodo --quiet --exec /usr/local/sbin/cachefilesd
+		fi
+		;;
+	stop)
+		service_status
+		if [ $? -eq 1 ]; then
+			if [ $nfs4_source != "" ]; then
+				echo -n "Uruk-NFS4: Unmounting resources... "
+				umount $nfs4_mpoint
+				echo "Done"
+			fi
+			echo -n "Uruk-NFS4: Disabling NFS4 service and modules... "
+			start-stop-daemon --stop --oknodo --quiet --exec $nfs4_idmapd -- -C
+			start-stop-daemon --stop --oknodo --quiet --exec $nfs4_portmap
+			umount /var/lib/nfs/rpc_pipefs
+			rmmod -w $nfs4_modules
+			if [ -e /var/run/cachefilesd.pid ]; then
+				start-stop-daemon --stop --oknodo --quiet --pidfile /var/run/cachefilesd.pid --exec /usr/local/sbin/cachefilesd
+				sleep 1
+				rmmod cachefiles
+			fi
+			echo "Done"
+		else
+			echo "Uruk-NFS4: Is already stoped"
+			exit 1
+		fi
+		;;
+	status)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "Uruk-NFS4: Enabled"
+		else
+			echo "Uruk-NFS4: Disabled"
+		fi
+		;;
+	UIstatus)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "on"
+		else
+			echo "off"
+		fi
+		;;
+	restart)
+		/etc/uruk.d/nfs4 stop $2
+		/etc/uruk.d/nfs4 start $2
+		;;
+	*|"")
+		echo "Uruk-Droid NFS4 service"
+		echo "Usage: NTFS {start|stop|status|restart}"
+		exit 1
+		;;
+esac
+

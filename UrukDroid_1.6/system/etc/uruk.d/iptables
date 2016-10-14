@@ -1,0 +1,80 @@
+#!/bin/sh
+#
+#### Information
+#  Ver: 1.4 (6.05.2011)
+#   By: Adrian (Sauron) Siemieniak
+# Desc: Enable nessesary modules to run iptables. Netfilter (iptables) is a Linux subsystem responsible for packet filtering (firewall)
+####
+
+URUKCONFIG=/etc/uruk.conf/iptables
+
+. /etc/uruk.d/service-common.sh
+
+# This function should return in every status script
+# 1: service is running
+# 0: service is not running
+service_status(){
+	if [ `grep -c iptable_filter /proc/modules` -gt 0 ]; then
+		return 1
+	else
+		return 0
+	fi
+}
+
+case "$1" in
+	start)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "Uruk-Iptables: Iptables modules already loaded."
+			exit 1
+		else
+			echo -n "Uruk-Iptables: Enabling iptables modules..."
+			modprobe -a $iptable_modules
+			check_fail $? "Failed"
+			if [ "$iptables_droidwall_modules" != "" ]; then
+				modprobe -a $iptables_droidwall_modules
+				check_fail $? "Failed"
+			fi
+			echo "Done"
+		fi
+		;;
+	stop)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo -n "Uruk-Iptables: Disabling iptables rules..."
+			iptables -F >/dev/null 2>&1
+			iptables -X >/dev/null 2>&1
+			if [ "$iptables_droidwall_modules" != "" ]; then
+				modprobe -r $iptables_droidwall_modules
+				check_fail $? "Failed"
+			fi
+			modprobe -r $iptable_modules
+			check_fail $? "Failed" "Done"
+		else
+			echo "Uruk-Iptables: No iptables modules loaded."
+			exit 1
+		fi
+		;;
+	status)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "Uruk-IPtables: Enabled"
+		else
+			echo "Uruk-IPtables: Disabled"
+		fi
+		;;
+	UIstatus)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "on"
+		else
+			echo "off"
+		fi
+		;;
+	*|"")
+		echo "Uruk-Droid IPtables service"
+		echo "Usage: iptables {start|stop|status}"
+		exit 1
+		;;
+esac
+

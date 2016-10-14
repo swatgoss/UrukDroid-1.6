@@ -1,0 +1,1 @@
+mknod /dev/dvb/adapter0/demux0 c 212 0

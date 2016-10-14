@@ -1,0 +1,2 @@
+<device DEVNO="0xb311" TIME="1324936616.563757" LABEL="boot" UUID="46b4f7a6-d8f4-4e57-9eea-6d940b452af5" TYPE="ext4">/dev/block/mmcblk2p1</device>
+<device DEVNO="0xb312" TIME="1324382414.872726" UUID="d94ec76c-9d84-49d5-8901-56a3adaa5d8f" TYPE="ext4">/dev/block/mmcblk2p2</device>

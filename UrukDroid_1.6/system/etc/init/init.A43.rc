@@ -1,0 +1,84 @@
+on init
+
+    # ISP/Camera modules
+    mknod /dev/video0 c 81 0
+    # change permissions for Camera
+    chmod 0777 /dev/video0
+
+    insmod /lib/modules/isp-mod.ko
+    insmod /lib/modules/mt9d113.ko
+    insmod /lib/modules/omap_mt9d113_isp.ko
+    insmod /lib/modules/omap34xxcam.ko
+
+    # Vout omap 3 modules
+    mknod /dev/video1 c 81 1
+    mknod /dev/video2 c 81 2
+    chmod 0777 /dev/video1
+    chmod 0777 /dev/video2
+
+    insmod /lib/modules/omap_previewer.ko
+    insmod /lib/modules/omap_resizer.ko
+    insmod /lib/modules/omap_voutlib.ko
+    insmod /lib/modules/omap_vout.ko vid1_static_vrfb_alloc=1
+
+    # DspBridge
+    insmod /lib/modules/mailbox.ko
+    insmod /lib/modules/mailbox_mach.ko
+    insmod /lib/modules/dspbridge.ko
+    insmod /lib/modules/bridgedriver.ko base_img=/system/lib/dsp/baseimage.dof
+    
+    # HDMI module
+    insmod /lib/modules/hdmitx.ko
+    insmod /lib/modules/nwolc.ko
+
+on boot
+
+    setprop ro.sf.lcd_density 240
+
+    setprop ro.product.name "Archos 43 Internet Tablet"
+    setprop ro.product.device A43
+    setprop ro.product.model A43
+    
+    setprop ro.board.has_hdmi yes
+    setprop ro.board.has_analog_out no
+    setprop ro.board.use_bluetooth yes
+    setprop ro.board.has_soft_keys no
+    setprop ro.board.has_earpiece yes
+    setprop ro.board.has_speaker yes
+    setprop ro.board.has_hp_detection yes
+    # rotation values are (anticlockwise) :
+    # 0 for 0 degree
+    # 1 for 90
+    # 2 for 180
+    # 3 for 270
+    #  (must be in sync with frameworks/base/core/java/android/view/Surface.java) 
+    setprop ro.board.display_portrait 0
+    setprop ro.board.tv_portrait 3
+    setprop ro.board.is_portrait yes    
+    setprop ro.board.has_gps yes
+    setprop ro.board.has_gsm no
+    setprop ro.board.has_mmc yes
+    setprop ro.board.has_camera yes
+    setprop ro.board.camera_type MT9D113
+    setprop ro.board.camera_hflipped no
+    setprop ro.board.camera_vflipped no
+    setprop ro.board.has_vibrator no
+    setprop ro.bootlogo android-logo-hdpi
+    setprop ro.board.has_buttonbar yes
+    setprop ro.board.has_dsp yes
+    setprop ro.board.usb_charging yes
+    setprop ro.board.has_resistive_tsp yes
+    setprop ro.board.brightness.dim 10
+    setprop ro.board.brightness.dim_default 130
+    setprop ro.board.brightness.delay 1400
+    setprop ro.board.touchpad_click_thresh 10
+    setprop ro.board.touchpad_press_thresh 0.3
+    setprop ro.board.light_sensor no
+    setprop ro.board.alarm_clock no
+    setprop ro.board.has_accelerometer yes
+    
+    setprop media.stagefright.enable-player true
+    setprop media.stagefright.enable-http true
+    
+    service omx_pm /system/bin/OMXPolicyManager
+        oneshot

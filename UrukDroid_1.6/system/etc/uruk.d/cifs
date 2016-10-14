@@ -1,0 +1,69 @@
+#!/bin/sh
+#
+#### Information
+#  Ver: 1.2 (6.05.2011)
+#   By: Adrian (Sauron) Siemieniak
+# Desc: Enable nessesary modules to use CIFS filesystem partition.
+####
+
+URUKCONFIG=/etc/uruk.conf/cifs
+
+. /etc/uruk.d/service-common.sh
+
+# This function should return in every status script
+# 1: service is running
+# 0: service is not running
+service_status(){
+	if [ `grep -c cifs /proc/modules` -gt 0 ]; then
+		return 1
+	else
+		return 0
+	fi
+}
+
+case "$1" in
+	start)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "Uruk-CIFS: CIFS modules already loaded."
+			exit 1
+		else
+			echo -n "Uruk-CIFS: Enabling CIFS modules..."
+			modprobe -a $cifs_modules
+			check_fail $? "Failed" "Done"
+		fi
+		;;
+	stop)
+		service_status
+		if [ $? -ne 1 ]; then
+			echo "Uruk-CIFS: CIFS modules already unloaded."
+			exit 1
+		else
+			echo -n "Uruk-CIFS: Disabling CIFS modules..."
+			modprobe -qr $cifs_modules
+			check_fail $? "Failed" "Done"
+		fi
+		;;
+	status)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "Uruk-CIFS: Enabled"
+		else
+			echo "Uruk-CIFS: Disabled"
+		fi
+		;;
+	UIstatus)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "on"
+		else
+			echo "off"
+		fi
+		;;
+	*|"")
+		echo "Uruk-Droid CIFS service"
+		echo "Usage: CIFS {start|stop|status}"
+		exit 1
+		;;
+esac
+

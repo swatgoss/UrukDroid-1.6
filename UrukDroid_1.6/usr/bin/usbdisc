@@ -1,0 +1,6 @@
+#!/bin/sh
+
+rmmod g_blockdev_storage
+rmmod musb_hdrc
+sync
+mount /mnt/data

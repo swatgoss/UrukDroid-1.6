@@ -1,0 +1,80 @@
+#!/bin/sh
+#
+# UrukDroid service system
+#
+#### Information
+#  Ver: 1.1 (7.04.2011)
+#   By: Adrian (Sauron) Siemieniak
+# Desc: This "pseudo" service enable/disable Archos mediascanner automatic updates, and allow to run it manually from UrukConfig.
+####
+
+URUKCONFIG=/etc/uruk.conf/mediascanner
+
+if [ -f $URUKCONFIG ]; then
+        . $URUKCONFIG
+else
+	echo "No required config file in $URUKCONFIG"
+	exit 1
+fi
+
+# Check is service is enabled at all
+if [ $service_enabled -ne 1 -a "$2" != "force" -a "$1" != "status" -a "$1" != "stats" ]; then
+	echo "Uruk-MediaScanner: This module is disabled in $URUKCONFIG"
+        exit 1
+fi
+
+# This function should return in every status script
+# 1: service is running
+# 0: service is not running
+service_status(){
+	if [ $service_enabled -gt 0 ]; then
+		return 1
+	else
+		return 0
+	fi
+}
+
+case "$1" in
+	start)
+		echo -n "Uruk-MediaScanner: Starting manually triggered media scan..."
+#		/system/xbin/mediascanner_diff.sh ondemand
+		touch /tmp/mediascanner-unlock.key
+# It may not work... since uid/gid may differ - but it won't harm...
+		chown 10006:10006 /tmp/mediascanner-unlock.key
+		echo "Done"
+		;;
+	stop)
+		echo -n "Uruk-MediaScanner: "
+		echo "Done"
+		;;
+	update)
+		echo -n "Uruk-MediaScanner: Checking for new updates..."
+		for update in `ls /data/UrukUpdate/`; do
+			echo $update
+			/system/xbin/uruk_upd "/data/UrukUpdate/$update"
+		done
+		echo "Done"
+		;;
+	status)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "Uruk-MediaScanner: Running (automatic media updates ON)"
+		else
+			echo "Uruk-MediaScanner: Stoped (automatic media updates OFF)"
+		fi
+		;;
+	UIstatus)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "on"
+		else
+			echo "off"
+		fi
+		;;
+	*|"")
+		echo "Uruk-Droid media scanner on demand service"
+		echo "Usage: mediascanner {start|update|status}"
+		exit 1
+		;;
+esac
+

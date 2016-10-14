@@ -1,0 +1,89 @@
+#!/bin/sh
+#
+# UrukDroid service system
+#
+#### Information
+#  Ver: 1.1 (5.05.2011)
+#   By: Adrian (Sauron) Siemieniak
+# Desc: Start/stop CompCache swap memory service. Compcache is a compressed part of memory, where less used object reside. Usual compression ratio is 70%
+####
+
+URUKCONFIG=/etc/uruk.conf/compcache
+
+if [ -f $URUKCONFIG ]; then
+        . $URUKCONFIG
+else
+	echo "No required config file in $URUKCONFIG"
+	exit 1
+fi
+
+# Check is service is enabled at all
+if [ $service_enabled -ne 1 -a "$2" != "force" ]; then
+	echo "Uruk-CompCache: This module is disabled in $URUKCONFIG"
+        exit 1
+fi
+
+# This function should return in every status script
+# 1: service is running
+# 0: service is not running
+service_status(){
+	if [ `grep -c /dev/block/ramzswap /proc/swaps` -gt 0 ]; then
+		 return 1
+	else
+		 return 0
+	fi
+}
+
+case "$1" in
+	start)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "Uruk-CompCache: CompCache swap memory service is already running."
+			exit 1
+		else
+			echo -n "Uruk-CompCache: Enabling $compcache_memkb KiB CompCache swap memory..."
+			modprobe ramzswap disksize_kb=$compcache_memkb
+			sysctl -w vm.swappiness=$compcache_swappiness
+			/usr/local/sbin/swapon -p 100 $compcache_dev1
+			echo "Done"
+		fi
+		;;
+	stop)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo -n "Uruk-CompCache: Disabling CompCache swap memory..."
+			/usr/local/sbin/swapoff $compcache_dev1
+			/usr/local/sbin/rzscontrol $compcache_dev1 --reset
+			rmmod ramzswap
+			echo "Done"
+		else
+			echo "Uruk-CompCache: CompCache swap memory service is already stopped."
+			exit 1
+		fi
+		;;
+	stats)
+		rzscontrol $compcache_dev1 --stats
+		;;
+	status)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "Uruk-CompCache: Enabled"
+		else
+			echo "Uruk-CompCache: Disabled"
+		fi
+		;;
+	UIstatus)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "on"
+		else
+			echo "off"
+		fi
+		;;
+	*|"")
+		echo "Uruk-Droid CompCache swap memory service"
+		echo "Usage: compcache {start|stop|status|stats}" >&2
+		exit 1
+		;;
+esac
+

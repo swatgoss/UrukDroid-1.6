@@ -1,0 +1,6 @@
+<permissions>
+	<feature name="android.software.live_wallpaper" />
+	<feature name="android.software.alarm_clock" />
+	<feature name="android.hardware.camera" />
+	<feature name="android.hardware.ram.256mo" />
+</permissions>

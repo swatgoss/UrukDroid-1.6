@@ -1,0 +1,101 @@
+#!/bin/sh
+#
+# UrukDroid service system
+#
+#### Information
+#  Ver: 1.2 (5.05.2011)
+#   By: Adrian (Sauron) Siemieniak
+# Desc: Start SSH server. You can connect to you Archos over ssh, or copy file. Use "root" user.
+####
+
+URUKCONFIG=/etc/uruk.conf/sshd
+
+if [ -f $URUKCONFIG ]; then
+        . $URUKCONFIG
+else
+	echo "No required config file in $URUKCONFIG"
+	exit 1
+fi
+
+# Check is service is enabled at all
+if [ $service_enabled -ne 1 -a "$2" != "force" ]; then
+	echo "Uruk-SSHd: This module is disabled in $URUKCONFIG"
+	exit 1
+fi
+
+PIDDIR=/var/run/
+SSHD_PID=$PIDDIR/sshd.pid
+
+# This function should return in every status script
+# 1: service is running
+# 0: service is not running
+service_status(){
+	if [ -f $SSHD_PID ]; then
+		pid=`cat $SSHD_PID`
+# Check if such a process exists for real
+		if [ -d "/proc/"$pid ]; then
+			return 1
+		else
+			rm $SSHD_PID
+			return 0
+		fi
+	else
+		return 0
+	fi
+}
+
+case "$1" in
+	start)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "Uruk-SSHd: Server SSHd is already running"
+			exit 1
+		fi
+		if [ ! -f $SSHD_RSA_KEY ]; then
+			echo -n "Uruk-SSHd: Generating RSA key..."
+			dropbearkey -t rsa -f $SSHD_RSA_KEY >/dev/null 2>&1
+			echo "Done"
+		fi
+		if [ ! -f $SSHD_DSS_KEY ]; then
+			echo -n "Uruk-SSHd: Generating DSS key..."
+			dropbearkey -t dss -f $SSHD_DSS_KEY >/dev/null 2>&1
+			echo "Done"
+		fi
+		echo -n "Uruk-SSHd: Starting SSHd server..."
+		/usr/local/sbin/dropbear -H $SSHD_HOME -Y $SSHD_PASS -S -p $SSHD_PORT -U -r $SSHD_RSA_KEY -d $SSHD_DSS_KEY -P $SSHD_PID -E -b $SSHD_BANNER >/dev/null 2>&1
+		echo "Done"
+		;;
+	stop)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo -n "Uruk-SSHd: Stoping SSHd server..."
+			kill -SIGTERM `cat $SSHD_PID`
+			echo "Done"
+		else
+			echo "Uruk-SSHd: SSHd server is not running."
+			exit 1
+		fi
+		;;
+	status)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "Uruk-SSHd: Running"
+		else
+			echo "Uruk-SSHd: Stoped"
+		fi
+		;;
+	UIstatus)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "on"
+		else
+			echo "off"
+		fi
+		;;
+	*|"")
+		echo "Uruk-Droid SSHd service"
+		echo "Usage: sshda {start|stop|status}"
+		exit 1
+		;;
+esac
+

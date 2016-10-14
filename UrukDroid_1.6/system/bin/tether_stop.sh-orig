@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [ $1 = "DUN" ]
+then
+    /system/xbin/dund --killall
+elif  [ $1 = "PAN" ]
+then
+    /system/bin/pand --killall
+else
+    kill -9 $(pidof pppd)
+    /system/bin/rmmod cdc_acm
+    /system/bin/rmmod musb_hdrc
+fi

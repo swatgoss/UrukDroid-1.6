@@ -1,0 +1,2 @@
+/data/UrukUpdate IN_CLOSE_WRITE,IN_MOVED_TO /system/xbin/uruk_upd_wrapper $@/$#
+#/data/UrukUpdate/ IN_ALL_EVENTS echo "$@/$# $%"

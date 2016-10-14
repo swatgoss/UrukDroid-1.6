@@ -1,0 +1,14 @@
+# Part of Uruk-Droid Android configuration system
+#
+# ver. 1.0 (21.02.2011) Adrian (Sauron) Siemieniak
+#
+
+# 1 to enable this service
+# 0 to disable this service
+service_enabled=0
+
+VPNC_BIN="/usr/local/sbin/vpnc-connect"
+VPNC_PID="/var/run/vpnc/pid"
+VPNC_PATH="/etc/vpnc"
+VPNC_PROFILE="archos"
+

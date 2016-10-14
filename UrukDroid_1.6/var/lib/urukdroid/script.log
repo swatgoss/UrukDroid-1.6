@@ -1,0 +1,24 @@
+-----------------------------
+Executing: package.postinst2stg
+Mon Jan  2 20:21:35 CET 2012
+rm: cannot remove `/data/UrukUpdate/*': No such file or directory
+Moving file ArchosWeather.apk
+`/system/app/ArchosWeather.apk' -> `./ArchosWeather.apk'
+Moving file ArchosWidget.apk
+`/system/app/ArchosWidget.apk' -> `./ArchosWidget.apk'
+Moving file Browser.apk
+`/system/app/Browser.apk' -> `./Browser.apk'
+Moving file Daos.apk
+`/system/app/Daos.apk' -> `./Daos.apk'
+Moving file DemoMode.apk
+`/system/app/DemoMode.apk' -> `./DemoMode.apk'
+Moving file DeskClock.apk
+`/system/app/DeskClock.apk' -> `./DeskClock.apk'
+Moving file Email.apk
+`/system/app/Email.apk' -> `./Email.apk'
+Moving file OnlineRegistration.apk
+`/system/app/OnlineRegistration.apk' -> `./OnlineRegistration.apk'
+Moving file StartupWizard.apk
+`/system/app/StartupWizard.apk' -> `./StartupWizard.apk'
+Mon Jan  2 20:21:48 CET 2012
+Script finished successfully

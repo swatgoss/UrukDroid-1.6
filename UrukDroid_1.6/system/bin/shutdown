@@ -1,0 +1,7 @@
+#!/bin/sh
+
+/etc/init.d/rcK 
+
+# Do shutdown
+/system/bin/toolbox reboot -p
+

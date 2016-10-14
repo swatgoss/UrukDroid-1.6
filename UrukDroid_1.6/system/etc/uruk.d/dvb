@@ -1,0 +1,148 @@
+#!/bin/sh
+#
+# UrukDroid service system
+#
+#### Information
+#  Ver: 1.4 (5.05.2011)
+#   By: Adrian (Sauron) Siemieniak
+# Desc: Add required modules for DVB. DVB is a technology for TV broadcasting.
+####
+
+URUKCONFIG=/etc/uruk.conf/dvb
+
+if [ -f $URUKCONFIG ]; then
+        . $URUKCONFIG
+else
+	echo "No required config file in $URUKCONFIG"
+	exit 1
+fi
+
+# Check is service is enabled at all
+if [ $service_enabled -ne 1 -a "$2" != "force" -a "$1" != "status" -a "$1" != "stats" ]; then
+	echo "Uruk-Dvb: This module is disabled in $URUKCONFIG"
+        exit 1
+fi
+
+# Checking if we have dvb configured
+if [ "$dvb_driver" = "" -a "$1" != "status" -a "$1" != "UIstatus" ]; then
+	echo "Uruk-Dvb: You have to choose proper DVB module in $URUKCONFIG"
+	exit 1
+fi
+
+#
+# Prepare DVB devices
+#
+prepare_devices(){
+	# If device is not a symlink
+	if [ ! -L /dev/dvb/adapter0/demux0 ]; then
+		# Erase in case if this is not a link (mknod leftof)
+		rm -f /dev/dvb/adapter0/demux0 /dev/dvb/adapter0/dvr0 /dev/dvb/adapter0/frontend0 /dev/dvb/adapter0/net0
+		# It's better this way than mknod, because different devices has different minor/major numbers
+		ln -s /dev/dvb0.demux0 /dev/dvb/adapter0/demux0
+		ln -s /dev/dvb0.dvr0 /dev/dvb/adapter0/dvr0
+		ln -s /dev/dvb0.frontend0 /dev/dvb/adapter0/frontend0
+		ln -s /dev/dvb0.net0 /dev/dvb/adapter0/net0
+		chmod 0777 /dev/dvb0.*
+	fi
+}
+
+prepare_devices2(){
+	# Check if there is what to prepare
+	if [ -c /dev/dvb0.demux0 ]; then
+		echo "Configuring devices for DVB..."
+		ls -l /dev/dvb0.* | sort -k 10 | awk '{print $10" "$6}' | cut -c 11- | awk '{print "mknod /dev/dvb/adapter0/"$1" c 212 "$2}' > "$dvb_devices_conf"
+	else
+		echo "Warning! No proper device found /dev/dvb0.*"
+		ls -l /dev/dvb0*
+	fi
+	if [ -e $dvb_devices_conf ]; then
+		echo "Preparing devices for DVB..."
+		rm -f /dev/dvb/adapter0/*
+		sh "$dvb_devices_conf"
+		chmod 0777 /dev/dvb/adapter0/*
+	fi
+}
+
+# This function should return in every status script
+# 1: service is running
+# 0: service is not running
+service_status(){
+	if [ `grep -c dvb /proc/modules` -gt 1 ]; then
+		return 1
+	else
+		return 0
+	fi
+}
+
+RMMOD=/usr/local/sbin/rmmod
+
+case "$1" in
+	start)
+		echo -n "Uruk-DVB: Enabling DVB support..."
+		# Disable remote pooling
+		# Preload modules
+		modprobe -a $preload_modules >/dev/null 2>&1
+		res=`modprobe -v $dvb_driver 2>/dev/null | grep -c insmod`
+		modprobe dvb-usb disable-rc-polling=1 >/dev/null 2>&1
+		if [ $? -eq 0 ]; then
+			sleep 1
+			echo "Done"
+			prepare_devices2
+		else
+			echo "Uruk-DVB: error loading DVB driver $dvb_driver"
+			exit 1
+		fi
+		;;
+	stop)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo -n "Uruk-DVB: Disabling DVB support..."
+			$RMMOD -w $dvb_driver >/dev/null 2>&1
+			$RMMOD $preload_modules >/dev/null 2>&1
+			$RMMOD -w dvb-usb >/dev/null 2>&1
+			$RMMOD -w dvb-core >/dev/null 2>&1
+			echo "Done"
+		else
+			echo "Uruk-DVB: Service already stoped"
+			exit 1
+		fi
+		;;
+	fixdev)
+		service_status
+		if [ $? -eq 1 ]; then
+			prepare_devices2
+		else
+			echo "Uruk-DVB: Service not enabled, try to run it first."
+			exit 1
+		fi
+		;;
+	devstatus)
+		if [ -c /dev/dvb0.demux0 ]; then
+			echo "Uruk-DVB: device configured"
+		else
+			echo "Uruk-DVB: device not found"
+			exit 1
+		fi
+		;;
+	status)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "Uruk-DVB: Enabled"
+		else
+			echo "Uruk-DVB: Disabled"
+		fi
+		;;
+	UIstatus)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "on"
+		else
+			echo "off"
+		fi
+		;;
+	*|"")
+		echo "Uruk-Droid DVB media service"
+		echo "Usage: dvb {start|stop|status|fixdev}"
+		exit 1
+		;;
+esac

@@ -1,0 +1,132 @@
+#!/bin/sh
+#
+# UrukDroid service system
+#
+#### Information
+#  Ver: 1.9 (29.12.2011)
+#   By: Adrian (Sauron) Siemieniak
+# Desc: Changes default CPU governor and it's parameters. Governor decides how to scale CPU frequency
+####
+
+URUKCONFIG=/etc/uruk.conf/cpugovernor
+
+. /etc/uruk.d/service-common.sh
+
+# This function should return in every status script
+# 1: service is running
+# 0: service is not running
+service_status(){
+	if [ `grep -c $cpu_governor $cpu_governor_file` -gt 0 ]; then
+		return 1
+	else
+		return 0
+	fi
+}
+
+case "$1" in
+	start)
+		echo -n "Uruk-CPUGovernor: Enabling $cpu_governor CPU governor..."
+		# Modprobe modules - if any
+		if [ "$cpu_governor_modules" != "" ]; then
+			modprobe -qa $cpu_governor_modules
+		fi
+		echo $cpu_governor > $cpu_governor_file
+		echo "Done"
+
+		# Check for overclock
+		if [ $enable_overclock -eq 1 ]; then
+			echo -n "Uruk-CPUGovernor: Enabling overclock module..."
+			modprobe overclock
+			echo "Done"
+			if [ "$max_vsel" != "" ]; then
+				echo -en "\tOverclock: Setting max_vsel to $max_vsel..."
+				echo $max_vsel >/proc/overclock/max_vsel
+				echo "Done"
+			fi
+			if [ "$max_rate" != "" ]; then
+				echo -en "\tOverclock: Setting max_rate to $max_rate hz..."
+				echo $max_rate >/proc/overclock/max_rate
+				echo "Done"
+			fi
+		fi
+
+		# Find MAX cpu freq. if not declared in config file
+		if [ "$cpu_freq_max" != "" ]; then
+			echo $cpu_freq_max > $cpu_set_freq_max
+		else
+			cat $cpu_frequencies | cut -d " " -f 1 > $cpu_set_freq_max
+		fi
+		# Find MIN cpu freq. if not declared in config file
+		if [ "$cpu_freq_min" != "" ]; then
+			echo $cpu_freq_min > $cpu_set_freq_min
+		else
+			cat $cpu_frequencies | awk '{print $NF}' > $cpu_set_freq_min
+		fi
+		;;
+	stop)
+		echo -n "Uruk-CPUGovernor: Disabling $cpu_governor CPU governor, setting default..."
+		echo $cpu_governor_default > $cpu_governor_file
+		# Remove modules - if any
+		if [ "$cpu_governor_modules" != "" ]; then
+			rmmod -w $cpu_governor_modules
+		fi
+		echo "Done"
+		;;
+	stats)
+		echo "Uruk-CPUGovernor statistics:"
+		echo -en "\tCurrent governor: "
+		cat $cpu_governor_file
+		echo -en "\tOverclock module: "
+		if [ `grep -c overclock /proc/modules` -gt 0 ]; then
+			echo "Enabled"
+			echo -en "\t\tCurrent max vsel: "
+			cat /proc/overclock/max_vsel
+			echo -en "\t\tCurrent max rate: "
+			cat /proc/overclock/max_rate
+		else
+			echo "Disabled"
+		fi
+		echo -en "\tCPU Max: "
+		cat $cpu_set_freq_max
+		echo -en "\tCPU Min: "
+		cat $cpu_set_freq_min
+		echo -en "\tAvailable frequencies: "
+		cat $cpu_frequencies
+		echo "CPU statistics (tick spend in every frequency range): "
+		COUNT=0
+		COUNT=$(cat "$cpu_freq_stats" | awk -v val=$COUNT '{val+=$2}END{print val}')
+		cat "$cpu_freq_stats" | awk -v val=$COUNT '{if($1>999999) printf "\t"$1/1000000" GHz"; else if($1>999) printf "\t"$1/1000" MHz"; else printf "\t"$1" Hz"; printf " had \t%d ticks \t(%2.2f%%)\n", $2, ($2/val*100); }'
+		;;
+	current|cur)
+		echo -en "\tCurrent frequency: "
+		sleep 1
+		cat $cpu_curr_freq
+		;;
+	genconf)
+		omap2_clk_init_cpufreq_table=`grep -E '(.*)[[:space:]]omap2_clk_init_cpufreq_table$' /proc/kallsyms | awk '{print "0x"$1}'`
+		cpufreq_stats_update=`grep -E '(.*)[[:space:]]cpufreq_stats_update$' /proc/kallsyms | awk '{print "0x"$1}'`
+		echo "options overclock omap2_clk_init_cpufreq_table_addr=$omap2_clk_init_cpufreq_table cpufreq_stats_update_addr=$cpufreq_stats_update"
+		;;
+	status)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "Uruk-CPUGovernor: Enabled ($cpu_governor)"
+		else
+			echo "Uruk-CPUGovernor: Disabled"
+		fi
+		;;
+	UIstatus)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "on"
+		else
+			echo "off"
+		fi
+		;;
+	*|"")
+		echo "Uruk-Droid CPUGovernor memory service"
+		echo "Usage: CPUGovernor {start|stop|status|stats|current|genconf}"
+		exit 1
+		;;
+esac
+

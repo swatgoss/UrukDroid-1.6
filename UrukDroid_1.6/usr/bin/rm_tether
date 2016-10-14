@@ -1,0 +1,4 @@
+#!/bin/sh
+
+rmmod cdc_acm
+rmmod musb_hdrc

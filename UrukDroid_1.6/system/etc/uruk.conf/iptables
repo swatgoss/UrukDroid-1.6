@@ -1,0 +1,14 @@
+# Part of Uruk-Droid Android configuration system
+#
+# ver. 1.3 (27.12.2011) Adrian (Sauron) Siemieniak
+#
+
+# 1 to enable this service
+# 0 to disable this service
+service_enabled=0
+
+# Modules to load for basic iptable support
+iptable_modules="iptable_filter ip_tables x_tables nf_conntrack iptable_nat"
+
+# If you want to use DroidWall
+iptables_droidwall_modules="ipt_LOG ipt_REJECT xt_tcpudp xt_owner"

@@ -1,0 +1,81 @@
+#!/bin/sh
+#
+# UrukDroid service system
+#
+#### Information
+#  Ver: 1.2 (4.08.2011)
+#   By: Adrian (Sauron) Siemieniak
+# Desc: OpenVPN service. Is a service that runs OpenVPN daemon to connect to your Virtual Private Network
+####
+
+URUKCONFIG=/etc/uruk.conf/openvpn
+
+. /etc/uruk.d/service-common.sh
+
+# This function should return in every status script
+# 1: service is running
+# 0: service is not running
+service_status(){
+	if [ -f $OPENVPN_PID ]; then
+		pid=`cat $OPENVPN_PID`
+		# Check if such a process exists for real
+		if [ -d "/proc/"$pid ]; then
+			return 1
+                else
+			rm $OPENVPN_PID
+			return 0
+		fi
+	else
+		return 0
+	fi
+}
+
+case "$1" in
+	start)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "Uruk-OpenVPN: OpenVPN server is already running."
+			exit 1
+		fi
+		echo -n "Uruk-OpenVPN: Starting OpenVPN service..."
+		modprobe tun >/dev/null 2>&1
+		mkdir /dev/net >/dev/null 2>&1
+		if [ ! -L /dev/net/tun ]; then ln -s /dev/tun /dev/net/tun; fi
+		$OPENVPN_BIN --writepid $OPENVPN_PID --daemon OVPN-UrukDroid  --status $OPENVPN_STATUS 10 --cd $OPENVPN_PATH --config $OPENVPN_CFG
+		echo "Done"
+		;;
+	stop)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo -n "Uruk-OpenVPN: Disabling OpenVPN service..."
+			kill `cat $OPENVPN_PID` || true
+			rm -f $OPENVPN_PID
+			rm -f $OPENVPN_STATUS 2> /dev/null
+			echo "Done"
+		else
+			echo "Uruk-OpenVPN: Service is allready stoped."
+			exit 1
+		fi
+		;;
+	status)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "Uruk-OpenVPN: Running"
+		else
+			echo "Uruk-OpenVPN: Stoped"
+		fi
+		;;
+	UIstatus)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "on"
+		else
+			echo "off"
+		fi
+		;;
+	*|"")
+		echo "Uruk-Droid OpenVPN (Virtual Private Network) service"
+		echo "Usage: openvpn {start|stop|status}"
+		exit 1
+		;;
+esac

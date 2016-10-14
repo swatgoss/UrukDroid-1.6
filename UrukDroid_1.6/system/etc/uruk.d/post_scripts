@@ -1,0 +1,31 @@
+#!/bin/bash
+#
+#### Information
+#  Ver: 1.0 (02.01.2012)
+#   By: Adrian (Sauron) Siemieniak
+# Desc: UrukDroid post installation/update/upgrade script runner
+####
+
+SCRIPT_DIR="/var/lib/urukdroid/post_scripts/"
+OUTPUT_FILE="/var/lib/urukdroid/script.log"
+
+if [ ! -d $SCRIPT_DIR ]; then
+	mkdir -p $SCRIPT_DIR
+	exit
+fi
+
+for script in `ls $SCRIPT_DIR`; do
+	if [ -x $SCRIPT_DIR$script -a `grep -c UrukDroid $SCRIPT_DIR$script` -gt 0 ]; then 
+		echo -e "-----------------------------\nExecuting: $script" >>$OUTPUT_FILE
+		date >>$OUTPUT_FILE
+		/bin/bash $SCRIPT_DIR$script >>$OUTPUT_FILE 2>&1
+		date >>$OUTPUT_FILE
+		if [ $? -eq 0 ]; then
+			echo "Script finished successfully" >>$OUTPUT_FILE
+			rm -f $SCRIPT_DIR$script
+		else
+			echo "Script finished with errors" >>$OUTPUT_FILE
+		fi
+	fi
+done
+

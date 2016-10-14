@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# $1 is the user (not a mandatory argument)
+# $2 is the password (not a mandatory argument)
+
+insmod /lib/modules/musb_hdrc.ko mode_default=1
+insmod /lib/modules/cdc-acm.ko
+
+if [$# -eq 0 ]
+then
+    /system/bin/pppd /dev/ttyACM0 460800 call tether
+else
+    /system/bin/pppd /dev/ttyACM0 460800 name $1 password $2 call tether
+fi

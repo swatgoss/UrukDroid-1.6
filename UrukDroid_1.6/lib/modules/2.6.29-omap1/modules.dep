@@ -1,0 +1,191 @@
+kernel/arch/arm/mach-omap2/dspbridge.ko:
+kernel/arch/arm/mach-omap2/mailbox_mach.ko: kernel/arch/arm/plat-omap/mailbox.ko
+kernel/arch/arm/plat-omap/mailbox.ko:
+kernel/kernel/configs.ko:
+kernel/fs/fscache/fscache.ko:
+kernel/fs/nfs/nfs.ko: kernel/fs/lockd/lockd.ko kernel/fs/fscache/fscache.ko kernel/net/sunrpc/auth_gss/auth_rpcgss.ko kernel/net/sunrpc/sunrpc.ko
+kernel/fs/lockd/lockd.ko: kernel/net/sunrpc/sunrpc.ko
+kernel/fs/cifs/cifs.ko:
+kernel/fs/ntfs/ntfs.ko:
+kernel/fs/fuse/fuse.ko:
+kernel/fs/cachefiles/cachefiles.ko: kernel/fs/fscache/fscache.ko
+kernel/crypto/pcbc.ko:
+kernel/crypto/lzo.ko: kernel/lib/lzo/lzo_decompress.ko kernel/lib/lzo/lzo_compress.ko
+kernel/drivers/video/output.ko:
+kernel/drivers/misc/ti-st/st_drv.ko:
+kernel/drivers/misc/ti-st/bt_drv.ko: kernel/drivers/misc/ti-st/st_drv.ko
+kernel/drivers/misc/ti-st/fm_drv.ko: kernel/drivers/misc/ti-st/st_drv.ko
+kernel/drivers/net/mii.ko:
+kernel/drivers/net/tun.ko:
+kernel/drivers/net/usb/hso.ko:
+kernel/drivers/net/usb/cdc_ether.ko: kernel/drivers/net/usb/usbnet.ko kernel/drivers/net/mii.ko
+kernel/drivers/net/usb/rndis_host.ko: kernel/drivers/net/usb/cdc_ether.ko kernel/drivers/net/usb/usbnet.ko kernel/drivers/net/mii.ko
+kernel/drivers/net/usb/cdc_subset.ko: kernel/drivers/net/usb/usbnet.ko kernel/drivers/net/mii.ko
+kernel/drivers/net/usb/usbnet.ko: kernel/drivers/net/mii.ko
+kernel/drivers/media/common/tuners/tuner-xc2028.ko:
+kernel/drivers/media/common/tuners/tuner-simple.ko: kernel/drivers/media/common/tuners/tuner-types.ko
+kernel/drivers/media/common/tuners/tuner-types.ko:
+kernel/drivers/media/common/tuners/mt20xx.ko:
+kernel/drivers/media/common/tuners/tda8290.ko: kernel/drivers/media/common/tuners/tda18271.ko kernel/drivers/media/common/tuners/tda827x.ko
+kernel/drivers/media/common/tuners/tea5767.ko:
+kernel/drivers/media/common/tuners/tea5761.ko:
+kernel/drivers/media/common/tuners/tda9887.ko:
+kernel/drivers/media/common/tuners/tda827x.ko:
+kernel/drivers/media/common/tuners/tda18271.ko:
+kernel/drivers/media/common/tuners/xc5000.ko:
+kernel/drivers/media/common/tuners/mt2060.ko:
+kernel/drivers/media/common/tuners/mt2266.ko:
+kernel/drivers/media/common/tuners/qt1010.ko:
+kernel/drivers/media/common/tuners/mxl5005s.ko:
+kernel/drivers/media/video/isp/omap_previewer.ko: kernel/drivers/media/video/isp/isp-mod.ko
+kernel/drivers/media/video/isp/omap_resizer.ko: kernel/drivers/media/video/isp/isp-mod.ko
+kernel/drivers/media/video/isp/omap_ov7675_isp.ko: kernel/drivers/media/video/isp/isp-mod.ko
+kernel/drivers/media/video/isp/omap_mt9d113_isp.ko: kernel/drivers/media/video/isp/isp-mod.ko
+kernel/drivers/media/video/isp/isp-mod.ko:
+kernel/drivers/media/video/omap/omap_voutlib.ko:
+kernel/drivers/media/video/omap/omap_vout.ko: kernel/drivers/media/video/omap/omap_voutlib.ko kernel/drivers/media/video/isp/omap_resizer.ko kernel/drivers/media/video/isp/isp-mod.ko
+kernel/drivers/media/video/ov7675.ko:
+kernel/drivers/media/video/mt9d113.ko:
+kernel/drivers/media/video/omap34xxcam.ko: kernel/drivers/media/video/isp/isp-mod.ko
+kernel/drivers/media/dvb/dvb-core/dvb-core.ko:
+kernel/drivers/media/dvb/frontends/dvb-pll.ko:
+kernel/drivers/media/dvb/frontends/stv0299.ko: kernel/drivers/media/dvb/dvb-core/dvb-core.ko
+kernel/drivers/media/dvb/frontends/dib3000mb.ko:
+kernel/drivers/media/dvb/frontends/dib3000mc.ko: kernel/drivers/media/dvb/frontends/dibx000_common.ko
+kernel/drivers/media/dvb/frontends/dibx000_common.ko:
+kernel/drivers/media/dvb/frontends/dib7000m.ko: kernel/drivers/media/dvb/frontends/dibx000_common.ko
+kernel/drivers/media/dvb/frontends/dib7000p.ko: kernel/drivers/media/dvb/frontends/dibx000_common.ko
+kernel/drivers/media/dvb/frontends/mt312.ko:
+kernel/drivers/media/dvb/frontends/tda1004x.ko:
+kernel/drivers/media/dvb/frontends/nxt6000.ko:
+kernel/drivers/media/dvb/frontends/mt352.ko:
+kernel/drivers/media/dvb/frontends/zl10353.ko:
+kernel/drivers/media/dvb/frontends/cx22702.ko:
+kernel/drivers/media/dvb/frontends/tda10023.ko:
+kernel/drivers/media/dvb/frontends/stv0297.ko:
+kernel/drivers/media/dvb/frontends/nxt200x.ko:
+kernel/drivers/media/dvb/frontends/bcm3510.ko:
+kernel/drivers/media/dvb/frontends/s5h1420.ko:
+kernel/drivers/media/dvb/frontends/lgdt330x.ko: kernel/drivers/media/dvb/dvb-core/dvb-core.ko
+kernel/drivers/media/dvb/frontends/cx24123.ko:
+kernel/drivers/media/dvb/frontends/lnbp21.ko:
+kernel/drivers/media/dvb/frontends/isl6421.ko:
+kernel/drivers/media/dvb/frontends/tda10086.ko:
+kernel/drivers/media/dvb/frontends/tda826x.ko:
+kernel/drivers/media/dvb/frontends/dib0070.ko:
+kernel/drivers/media/dvb/frontends/itd1000.ko:
+kernel/drivers/media/dvb/frontends/cx24113.ko:
+kernel/drivers/media/dvb/frontends/s5h1411.ko:
+kernel/drivers/media/dvb/frontends/af9013.ko:
+kernel/drivers/media/dvb/frontends/cx24116.ko:
+kernel/drivers/media/dvb/frontends/si21xx.ko:
+kernel/drivers/media/dvb/frontends/stv0288.ko:
+kernel/drivers/media/dvb/frontends/stb6000.ko:
+kernel/drivers/media/dvb/b2c2/b2c2-flexcop.ko: kernel/drivers/media/dvb/frontends/s5h1420.ko kernel/drivers/media/dvb/frontends/mt352.ko kernel/drivers/media/dvb/frontends/itd1000.ko kernel/drivers/media/dvb/frontends/bcm3510.ko kernel/drivers/media/dvb/frontends/dvb-pll.ko kernel/drivers/media/dvb/frontends/stv0297.ko kernel/drivers/media/dvb/frontends/nxt200x.ko kernel/drivers/media/dvb/frontends/isl6421.ko kernel/drivers/media/common/tuners/tuner-simple.ko kernel/drivers/media/common/tuners/tuner-types.ko kernel/drivers/media/dvb/frontends/cx24113.ko kernel/drivers/media/dvb/frontends/mt312.ko kernel/drivers/media/dvb/frontends/cx24123.ko kernel/drivers/media/dvb/frontends/lgdt330x.ko kernel/drivers/media/dvb/frontends/stv0299.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko
+kernel/drivers/media/dvb/b2c2/b2c2-flexcop-usb.ko: kernel/drivers/media/dvb/b2c2/b2c2-flexcop.ko kernel/drivers/media/dvb/frontends/s5h1420.ko kernel/drivers/media/dvb/frontends/mt352.ko kernel/drivers/media/dvb/frontends/itd1000.ko kernel/drivers/media/dvb/frontends/bcm3510.ko kernel/drivers/media/dvb/frontends/dvb-pll.ko kernel/drivers/media/dvb/frontends/stv0297.ko kernel/drivers/media/dvb/frontends/nxt200x.ko kernel/drivers/media/dvb/frontends/isl6421.ko kernel/drivers/media/common/tuners/tuner-simple.ko kernel/drivers/media/common/tuners/tuner-types.ko kernel/drivers/media/dvb/frontends/cx24113.ko kernel/drivers/media/dvb/frontends/mt312.ko kernel/drivers/media/dvb/frontends/cx24123.ko kernel/drivers/media/dvb/frontends/lgdt330x.ko kernel/drivers/media/dvb/frontends/stv0299.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko
+kernel/drivers/media/dvb/dvb-usb/dvb-usb.ko: kernel/drivers/media/dvb/dvb-core/dvb-core.ko
+kernel/drivers/media/dvb/dvb-usb/dvb-usb-vp7045.ko: kernel/drivers/media/dvb/dvb-usb/dvb-usb.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko
+kernel/drivers/media/dvb/dvb-usb/dvb-usb-vp702x.ko: kernel/drivers/media/dvb/dvb-usb/dvb-usb.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko
+kernel/drivers/media/dvb/dvb-usb/dvb-usb-gp8psk.ko: kernel/drivers/media/dvb/dvb-usb/dvb-usb.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko
+kernel/drivers/media/dvb/dvb-usb/dvb-usb-dtt200u.ko: kernel/drivers/media/dvb/dvb-usb/dvb-usb.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko
+kernel/drivers/media/dvb/dvb-usb/dvb-usb-dibusb-common.ko: kernel/drivers/media/dvb/dvb-usb/dvb-usb.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko kernel/drivers/media/dvb/frontends/dvb-pll.ko kernel/drivers/media/common/tuners/mt2060.ko kernel/drivers/media/dvb/frontends/dib3000mc.ko kernel/drivers/media/dvb/frontends/dibx000_common.ko
+kernel/drivers/media/dvb/dvb-usb/dvb-usb-a800.ko: kernel/drivers/media/dvb/dvb-usb/dvb-usb-dibusb-common.ko kernel/drivers/media/dvb/frontends/dvb-pll.ko kernel/drivers/media/common/tuners/mt2060.ko kernel/drivers/media/dvb/frontends/dib3000mc.ko kernel/drivers/media/dvb/frontends/dibx000_common.ko kernel/drivers/media/dvb/dvb-usb/dvb-usb.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko
+kernel/drivers/media/dvb/dvb-usb/dvb-usb-dibusb-mb.ko: kernel/drivers/media/dvb/dvb-usb/dvb-usb-dibusb-common.ko kernel/drivers/media/common/tuners/mt2060.ko kernel/drivers/media/dvb/frontends/dib3000mc.ko kernel/drivers/media/dvb/frontends/dibx000_common.ko kernel/drivers/media/dvb/frontends/dvb-pll.ko kernel/drivers/media/dvb/frontends/dib3000mb.ko kernel/drivers/media/dvb/dvb-usb/dvb-usb.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko
+kernel/drivers/media/dvb/dvb-usb/dvb-usb-dibusb-mc.ko: kernel/drivers/media/dvb/dvb-usb/dvb-usb-dibusb-common.ko kernel/drivers/media/dvb/frontends/dvb-pll.ko kernel/drivers/media/common/tuners/mt2060.ko kernel/drivers/media/dvb/frontends/dib3000mc.ko kernel/drivers/media/dvb/frontends/dibx000_common.ko kernel/drivers/media/dvb/dvb-usb/dvb-usb.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko
+kernel/drivers/media/dvb/dvb-usb/dvb-usb-nova-t-usb2.ko: kernel/drivers/media/dvb/dvb-usb/dvb-usb-dibusb-common.ko kernel/drivers/media/dvb/frontends/dvb-pll.ko kernel/drivers/media/common/tuners/mt2060.ko kernel/drivers/media/dvb/frontends/dib3000mc.ko kernel/drivers/media/dvb/frontends/dibx000_common.ko kernel/drivers/media/dvb/dvb-usb/dvb-usb.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko
+kernel/drivers/media/dvb/dvb-usb/dvb-usb-umt-010.ko: kernel/drivers/media/dvb/frontends/mt352.ko kernel/drivers/media/dvb/dvb-usb/dvb-usb-dibusb-common.ko kernel/drivers/media/common/tuners/mt2060.ko kernel/drivers/media/dvb/frontends/dib3000mc.ko kernel/drivers/media/dvb/frontends/dibx000_common.ko kernel/drivers/media/dvb/frontends/dvb-pll.ko kernel/drivers/media/dvb/dvb-usb/dvb-usb.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko
+kernel/drivers/media/dvb/dvb-usb/dvb-usb-m920x.ko: kernel/drivers/media/dvb/frontends/mt352.ko kernel/drivers/media/dvb/frontends/tda1004x.ko kernel/drivers/media/dvb/dvb-usb/dvb-usb.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko kernel/drivers/media/common/tuners/tda827x.ko kernel/drivers/media/common/tuners/qt1010.ko
+kernel/drivers/media/dvb/dvb-usb/dvb-usb-gl861.ko: kernel/drivers/media/dvb/frontends/zl10353.ko kernel/drivers/media/dvb/dvb-usb/dvb-usb.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko kernel/drivers/media/common/tuners/qt1010.ko
+kernel/drivers/media/dvb/dvb-usb/dvb-usb-au6610.ko: kernel/drivers/media/dvb/frontends/zl10353.ko kernel/drivers/media/dvb/dvb-usb/dvb-usb.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko kernel/drivers/media/common/tuners/qt1010.ko
+kernel/drivers/media/dvb/dvb-usb/dvb-usb-digitv.ko: kernel/drivers/media/dvb/frontends/nxt6000.ko kernel/drivers/media/dvb/frontends/mt352.ko kernel/drivers/media/dvb/dvb-usb/dvb-usb.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko kernel/drivers/media/dvb/frontends/dvb-pll.ko
+kernel/drivers/media/dvb/dvb-usb/dvb-usb-cxusb.ko: kernel/drivers/media/dvb/frontends/dib7000p.ko kernel/drivers/media/dvb/frontends/dibx000_common.ko kernel/drivers/media/dvb/dvb-usb/dvb-usb.ko kernel/drivers/media/dvb/frontends/mt352.ko kernel/drivers/media/common/tuners/tuner-xc2028.ko kernel/drivers/media/dvb/frontends/dvb-pll.ko kernel/drivers/media/common/tuners/tuner-simple.ko kernel/drivers/media/common/tuners/tuner-types.ko kernel/drivers/media/common/tuners/mxl5005s.ko kernel/drivers/media/dvb/frontends/dib0070.ko kernel/drivers/media/dvb/frontends/zl10353.ko kernel/drivers/media/dvb/frontends/lgdt330x.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko kernel/drivers/media/dvb/frontends/cx22702.ko
+kernel/drivers/media/dvb/dvb-usb/dvb-usb-ttusb2.ko: kernel/drivers/media/dvb/frontends/lnbp21.ko kernel/drivers/media/dvb/frontends/tda826x.ko kernel/drivers/media/dvb/dvb-usb/dvb-usb.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko kernel/drivers/media/dvb/frontends/tda10086.ko
+kernel/drivers/media/dvb/dvb-usb/dvb-usb-dib0700.ko: kernel/drivers/media/dvb/frontends/dib7000p.ko kernel/drivers/media/dvb/frontends/dib7000m.ko kernel/drivers/media/dvb/dvb-usb/dvb-usb.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko kernel/drivers/media/common/tuners/mt2266.ko kernel/drivers/media/common/tuners/tuner-xc2028.ko kernel/drivers/media/dvb/frontends/dib3000mc.ko kernel/drivers/media/dvb/frontends/dibx000_common.ko kernel/drivers/media/common/tuners/xc5000.ko kernel/drivers/media/dvb/frontends/s5h1411.ko kernel/drivers/media/common/tuners/mt2060.ko kernel/drivers/media/dvb/frontends/dib0070.ko
+kernel/drivers/media/dvb/dvb-usb/dvb-usb-opera.ko: kernel/drivers/media/dvb/frontends/dvb-pll.ko kernel/drivers/media/dvb/dvb-usb/dvb-usb.ko kernel/drivers/media/dvb/frontends/stv0299.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko
+kernel/drivers/media/dvb/dvb-usb/dvb-usb-af9005.ko: kernel/drivers/media/common/tuners/mt2060.ko kernel/drivers/media/dvb/dvb-usb/dvb-usb.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko kernel/drivers/media/common/tuners/qt1010.ko
+kernel/drivers/media/dvb/dvb-usb/dvb-usb-af9005-remote.ko:
+kernel/drivers/media/dvb/dvb-usb/dvb-usb-anysee.ko: kernel/drivers/media/dvb/frontends/mt352.ko kernel/drivers/media/dvb/dvb-usb/dvb-usb.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko kernel/drivers/media/dvb/frontends/dvb-pll.ko kernel/drivers/media/dvb/frontends/tda10023.ko kernel/drivers/media/dvb/frontends/zl10353.ko
+kernel/drivers/media/dvb/dvb-usb/dvb-usb-dw2102.ko: kernel/drivers/media/dvb/frontends/dvb-pll.ko kernel/drivers/media/dvb/frontends/cx24116.ko kernel/drivers/media/dvb/frontends/stb6000.ko kernel/drivers/media/dvb/frontends/si21xx.ko kernel/drivers/media/dvb/dvb-usb/dvb-usb.ko kernel/drivers/media/dvb/frontends/stv0299.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko kernel/drivers/media/dvb/frontends/stv0288.ko
+kernel/drivers/media/dvb/dvb-usb/dvb-usb-dtv5100.ko: kernel/drivers/media/dvb/frontends/zl10353.ko kernel/drivers/media/dvb/dvb-usb/dvb-usb.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko kernel/drivers/media/common/tuners/qt1010.ko
+kernel/drivers/media/dvb/dvb-usb/dvb-usb-af9015.ko: kernel/drivers/media/common/tuners/tda18271.ko kernel/drivers/media/dvb/frontends/af9013.ko kernel/drivers/media/dvb/frontends/dvb-pll.ko kernel/drivers/media/common/tuners/mt2060.ko kernel/drivers/media/common/tuners/mxl5005s.ko kernel/drivers/media/dvb/dvb-usb/dvb-usb.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko kernel/drivers/media/common/tuners/qt1010.ko
+kernel/drivers/media/dvb/dvb-usb/dvb-usb-cinergyT2.ko: kernel/drivers/media/dvb/dvb-usb/dvb-usb.ko kernel/drivers/media/dvb/dvb-core/dvb-core.ko
+kernel/drivers/media/dvb/siano/sms1xxx.ko: kernel/drivers/media/dvb/dvb-core/dvb-core.ko
+kernel/drivers/scsi/scsi_wait_scan.ko:
+kernel/drivers/usb/class/cdc-acm.ko:
+kernel/drivers/usb/class/cdc-wdm.ko:
+kernel/drivers/usb/serial/usbserial.ko:
+kernel/drivers/usb/serial/ftdi_sio.ko: kernel/drivers/usb/serial/usbserial.ko
+kernel/drivers/usb/serial/ipw.ko: kernel/drivers/usb/serial/usbserial.ko
+kernel/drivers/usb/serial/keyspan.ko: kernel/drivers/usb/serial/usbserial.ko
+kernel/drivers/usb/serial/option.ko: kernel/drivers/usb/serial/usbserial.ko
+kernel/drivers/usb/serial/pl2303.ko: kernel/drivers/usb/serial/usbserial.ko
+kernel/drivers/usb/gadget/g_zero.ko: kernel/drivers/usb/musb/musb_hdrc.ko
+kernel/drivers/usb/gadget/g_ether.ko: kernel/drivers/usb/musb/musb_hdrc.ko
+kernel/drivers/usb/gadget/gadgetfs.ko: kernel/drivers/usb/musb/musb_hdrc.ko
+kernel/drivers/usb/gadget/g_file_storage.ko: kernel/drivers/usb/musb/musb_hdrc.ko
+kernel/drivers/usb/gadget/g_blockdev_storage.ko: kernel/drivers/usb/musb/musb_hdrc.ko
+kernel/drivers/usb/gadget/g_serial.ko: kernel/drivers/usb/musb/musb_hdrc.ko
+kernel/drivers/usb/gadget/g_cdc.ko: kernel/drivers/usb/musb/musb_hdrc.ko
+kernel/drivers/usb/gadget/g_android.ko: kernel/drivers/usb/musb/musb_hdrc.ko
+kernel/drivers/input/joystick/xpad.ko: kernel/drivers/input/ff-memless.ko
+kernel/drivers/input/ff-memless.ko:
+kernel/drivers/cpufreq/cpufreq_powersave.ko:
+kernel/drivers/cpufreq/cpufreq_userspace.ko:
+kernel/drivers/cpufreq/cpufreq_conservative.ko:
+kernel/drivers/hid/hid-dummy.ko:
+kernel/drivers/dsp/bridge/bridgedriver.ko: kernel/arch/arm/plat-omap/mailbox.ko
+kernel/drivers/usb/musb/musb_hdrc.ko:
+kernel/sound/soc/codecs/snd-soc-wl1271.ko:
+kernel/sound/soc/codecs/snd-soc-tda19989.ko:
+kernel/sound/soc/codecs/snd-soc-wm8988.ko:
+kernel/sound/soc/omap/snd-soc-omap-mcbsp.ko:
+kernel/sound/soc/omap/snd-soc-archos.ko: kernel/sound/soc/codecs/snd-soc-wm8988.ko kernel/sound/soc/omap/snd-soc-omap-mcbsp.ko kernel/sound/soc/codecs/snd-soc-tda19989.ko kernel/sound/soc/codecs/snd-soc-wl1271.ko
+kernel/net/netfilter/nfnetlink.ko:
+kernel/net/netfilter/nfnetlink_queue.ko: kernel/net/netfilter/nfnetlink.ko
+kernel/net/netfilter/nfnetlink_log.ko: kernel/net/netfilter/nfnetlink.ko
+kernel/net/netfilter/nf_conntrack.ko:
+kernel/net/netfilter/nf_conntrack_proto_gre.ko: kernel/net/netfilter/nf_conntrack.ko
+kernel/net/netfilter/nf_conntrack_netlink.ko: kernel/net/netfilter/nf_conntrack.ko kernel/net/netfilter/nfnetlink.ko
+kernel/net/netfilter/nf_conntrack_ftp.ko: kernel/net/netfilter/nf_conntrack.ko
+kernel/net/netfilter/nf_conntrack_irc.ko: kernel/net/netfilter/nf_conntrack.ko
+kernel/net/netfilter/nf_conntrack_pptp.ko: kernel/net/netfilter/nf_conntrack_proto_gre.ko kernel/net/netfilter/nf_conntrack.ko
+kernel/net/netfilter/nf_conntrack_tftp.ko: kernel/net/netfilter/nf_conntrack.ko
+kernel/net/netfilter/nf_tproxy_core.ko:
+kernel/net/netfilter/x_tables.ko:
+kernel/net/netfilter/xt_tcpudp.ko: kernel/net/netfilter/x_tables.ko
+kernel/net/netfilter/xt_MARK.ko: kernel/net/netfilter/x_tables.ko
+kernel/net/netfilter/xt_NFLOG.ko: kernel/net/netfilter/x_tables.ko kernel/net/netfilter/nfnetlink_log.ko kernel/net/netfilter/nfnetlink.ko
+kernel/net/netfilter/xt_NFQUEUE.ko: kernel/net/netfilter/x_tables.ko
+kernel/net/netfilter/xt_conntrack.ko: kernel/net/netfilter/nf_conntrack.ko kernel/net/netfilter/x_tables.ko
+kernel/net/netfilter/xt_iprange.ko: kernel/net/netfilter/x_tables.ko
+kernel/net/netfilter/xt_owner.ko: kernel/net/netfilter/x_tables.ko
+kernel/net/ipv4/netfilter/nf_conntrack_ipv4.ko: kernel/net/netfilter/nf_conntrack.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko
+kernel/net/ipv4/netfilter/nf_nat.ko: kernel/net/ipv4/netfilter/nf_conntrack_ipv4.ko kernel/net/netfilter/nf_conntrack.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko
+kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko:
+kernel/net/ipv4/netfilter/nf_nat_ftp.ko: kernel/net/ipv4/netfilter/nf_nat.ko kernel/net/ipv4/netfilter/nf_conntrack_ipv4.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko kernel/net/netfilter/nf_conntrack_ftp.ko kernel/net/netfilter/nf_conntrack.ko
+kernel/net/ipv4/netfilter/nf_nat_irc.ko: kernel/net/ipv4/netfilter/nf_nat.ko kernel/net/ipv4/netfilter/nf_conntrack_ipv4.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko kernel/net/netfilter/nf_conntrack_irc.ko kernel/net/netfilter/nf_conntrack.ko
+kernel/net/ipv4/netfilter/nf_nat_pptp.ko: kernel/net/netfilter/nf_conntrack_pptp.ko kernel/net/netfilter/nf_conntrack_proto_gre.ko kernel/net/ipv4/netfilter/nf_nat_proto_gre.ko kernel/net/ipv4/netfilter/nf_nat.ko kernel/net/ipv4/netfilter/nf_conntrack_ipv4.ko kernel/net/netfilter/nf_conntrack.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko
+kernel/net/ipv4/netfilter/nf_nat_tftp.ko: kernel/net/ipv4/netfilter/nf_nat.ko kernel/net/ipv4/netfilter/nf_conntrack_ipv4.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko kernel/net/netfilter/nf_conntrack_tftp.ko kernel/net/netfilter/nf_conntrack.ko
+kernel/net/ipv4/netfilter/nf_nat_proto_gre.ko: kernel/net/ipv4/netfilter/nf_nat.ko kernel/net/ipv4/netfilter/nf_conntrack_ipv4.ko kernel/net/netfilter/nf_conntrack.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko
+kernel/net/ipv4/netfilter/ip_tables.ko: kernel/net/netfilter/x_tables.ko
+kernel/net/ipv4/netfilter/iptable_filter.ko: kernel/net/ipv4/netfilter/ip_tables.ko kernel/net/netfilter/x_tables.ko
+kernel/net/ipv4/netfilter/iptable_mangle.ko: kernel/net/ipv4/netfilter/ip_tables.ko kernel/net/netfilter/x_tables.ko
+kernel/net/ipv4/netfilter/iptable_nat.ko: kernel/net/ipv4/netfilter/ip_tables.ko kernel/net/ipv4/netfilter/nf_nat.ko kernel/net/netfilter/x_tables.ko kernel/net/ipv4/netfilter/nf_conntrack_ipv4.ko kernel/net/netfilter/nf_conntrack.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko
+kernel/net/ipv4/netfilter/iptable_raw.ko: kernel/net/ipv4/netfilter/ip_tables.ko kernel/net/netfilter/x_tables.ko
+kernel/net/ipv4/netfilter/ipt_LOG.ko: kernel/net/netfilter/x_tables.ko
+kernel/net/ipv4/netfilter/ipt_MASQUERADE.ko: kernel/net/ipv4/netfilter/nf_nat.ko kernel/net/ipv4/netfilter/nf_conntrack_ipv4.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko kernel/net/netfilter/x_tables.ko kernel/net/netfilter/nf_conntrack.ko
+kernel/net/ipv4/netfilter/ipt_NETMAP.ko: kernel/net/ipv4/netfilter/nf_nat.ko kernel/net/ipv4/netfilter/nf_conntrack_ipv4.ko kernel/net/netfilter/nf_conntrack.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko kernel/net/netfilter/x_tables.ko
+kernel/net/ipv4/netfilter/ipt_REDIRECT.ko: kernel/net/ipv4/netfilter/nf_nat.ko kernel/net/ipv4/netfilter/nf_conntrack_ipv4.ko kernel/net/netfilter/nf_conntrack.ko kernel/net/ipv4/netfilter/nf_defrag_ipv4.ko kernel/net/netfilter/x_tables.ko
+kernel/net/ipv4/netfilter/ipt_REJECT.ko: kernel/net/netfilter/x_tables.ko
+kernel/net/ipv4/netfilter/arp_tables.ko: kernel/net/netfilter/x_tables.ko
+kernel/net/sunrpc/sunrpc.ko:
+kernel/net/sunrpc/auth_gss/auth_rpcgss.ko: kernel/net/sunrpc/sunrpc.ko
+kernel/net/sunrpc/auth_gss/rpcsec_gss_krb5.ko: kernel/net/sunrpc/auth_gss/auth_rpcgss.ko kernel/net/sunrpc/sunrpc.ko
+kernel/lib/lzo/lzo_compress.ko:
+kernel/lib/lzo/lzo_decompress.ko:
+misc/ec100.ko:
+misc/ramzswap.ko: kernel/lib/lzo/lzo_decompress.ko kernel/lib/lzo/lzo_compress.ko
+misc/overclock.ko:
+misc/hdmitx.ko:
+misc/tiwlan_drv.ko:
+misc/hdmicec.ko: misc/hdmitx.ko

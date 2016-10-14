@@ -1,0 +1,56 @@
+on init
+
+    # Vout omap 3 modules
+    mknod /dev/video0 c 81 0
+    chmod 0777 /dev/video0
+
+    insmod /lib/modules/isp-mod.ko
+    insmod /lib/modules/omap_previewer.ko
+    insmod /lib/modules/omap_resizer.ko
+    insmod /lib/modules/omap_voutlib.ko
+#video1_bufsize = 768*576*2
+    insmod /lib/modules/omap_vout.ko vid1_static_vrfb_alloc=1 video1_bufsize=884736 video1_numbuffers=3 video1_maxbuffers=3
+
+on boot
+    setprop ro.sf.lcd_density 152
+
+    setprop ro.product.name "Archos 35 Internet Tablet"
+    setprop ro.product.device A35
+    setprop ro.product.model A35
+
+    setprop ro.board.has_hdmi no
+    setprop ro.board.has_analog_out no
+    setprop ro.board.use_bluetooth no
+    setprop ro.board.has_soft_keys yes
+    setprop ro.board.has_earpiece no
+    setprop ro.board.has_speaker no
+    setprop ro.board.has_hp_detection no
+    # rotation values are (anticlockwise) :
+    # 0 for 0 degree
+    # 1 for 90
+    # 2 for 180
+    # 3 for 270
+    #  (must be in sync with frameworks/base/core/java/android/view/Surface.java) 
+    setprop ro.board.rotation_landscape 1
+    setprop ro.board.rotation_portrait 0
+    setprop ro.board.is_portrait yes    
+    setprop ro.board.has_gps_nl5550 no
+    setprop ro.board.has_gsm no
+    setprop ro.board.has_mmc yes
+    setprop ro.board.has_camera no
+    setprop ro.board.has_vibrator no
+    setprop ro.bootlogo android-logo-ldpi
+    setprop ro.board.has_buttonbar no
+    setprop ro.board.has_dsp no
+    setprop ro.board.usb_charging yes
+    setprop ro.board.brightness.dim 110
+    setprop ro.board.brightness.dim_default 216
+    setprop ro.board.brightness.delay 950
+    setprop ro.board.has_resistive_tsp yes
+    setprop ro.board.touchpad_click_thresh 6
+    setprop ro.board.light_sensor no
+    setprop ro.board.alarm_clock no
+    setprop ro.board.has_accelerometer yes
+    
+    setprop media.stagefright.enable-player true
+    setprop media.stagefright.enable-http true

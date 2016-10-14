@@ -1,0 +1,29 @@
+linkname tether
+#debug
+# connection
+unit 0
+crtscts
+hide-password
+nodetach
+# peer parameters
+noauth
+# most gprs phones don't reply to lcp echo
+lcp-echo-interval 0
+lcp-echo-failure 0
+# dns, routing
+ipcp-accept-remote
+ipcp-accept-local
+defaultroute
+#replacedefaultroute # not currently supported by our pppd
+noipdefault
+usepeerdns
+# avoid compression
+# novj is now an option
+novjccomp
+noccp
+nobsdcomp
+nopcomp
+noaccomp
+# connect scripts
+connect '/system/xbin/chat -v -t3 -f /data/tether_start'
+disconnect '/system/xbin/chat -v -t3 -f /etc/chatscripts/tether_stop'

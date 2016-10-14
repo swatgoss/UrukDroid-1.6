@@ -1,0 +1,23 @@
+# Part of Uruk-Droid Android configuration system
+#
+# ver. 1.2 (19.08.2011) Adrian (Sauron) Siemieniak
+#
+
+# 1 to enable this service
+# 0 to disable this service
+service_enabled=1
+
+# Remember to check if there is enought free space for swap file
+# Swap memory size in MiB (default: 50)
+# Min: 1
+# Max: free storage on your partition
+#swap_mem_size=50
+#swap_mem_file=/swap01.file
+
+# If you prefere to use swap partition (instead swap file) edit and uncoment this:
+# This is partition that may exists already on your device
+swap_mem_partition=/dev/block/mmcblk0p3
+
+# How eagerly kernel will swap memory, bigger=faster swapping (default: 60)
+swap_mem_swappiness=50
+

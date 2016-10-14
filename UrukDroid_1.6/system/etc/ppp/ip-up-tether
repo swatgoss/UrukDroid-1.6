@@ -1,0 +1,7 @@
+#!/system/bin/sh
+
+/system/bin/log -t pppd "start ip up  for Tethering"
+
+/system/bin/setprop "net.dns1" "$DNS1"
+/system/bin/setprop "net.dns2" "$DNS2"
+/system/bin/setprop "archos.tetherState" "connected"

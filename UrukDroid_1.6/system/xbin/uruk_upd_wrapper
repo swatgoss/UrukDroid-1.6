@@ -1,0 +1,16 @@
+#!/bin/sh
+#
+# Update wraper to redirect output to proper file
+
+update_log="/var/lib/urukdroid/update.log"
+
+# Exit if empty args
+if [ "$1" = "" ]; then
+	exit
+fi
+
+echo "Starting update script: ">>$update_log
+date -R >>$update_log
+sleep 1
+sync
+/system/xbin/uruk_upd $@ >>$update_log 2>&1

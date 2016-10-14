@@ -1,0 +1,45 @@
+#!/bin/sh
+# udhcpc script edited by Tim Riker <Tim@Rikers.org>
+
+VAR_FILE=/var/run/udhcpc.vars
+
+[ -z "$1" ] && echo "Error: should be called from udhcpc" && exit 1
+
+RESOLV_CONF="/etc/resolv.conf"
+[ -n "$broadcast" ] && BROADCAST="broadcast $broadcast"
+[ -n "$subnet" ] && NETMASK="netmask $subnet"
+
+case "$1" in
+	deconfig)
+		/sbin/ifconfig $interface 0.0.0.0
+		[ -e "$VAR_FILE" ] && rm $VAR_FILE
+		;;
+
+	renew|bound)
+		/sbin/ifconfig $interface $ip $BROADCAST $NETMASK
+		echo "IP=$ip" > $VAR_FILE
+                echo "NETMASK=$subnet" >> $VAR_FILE 
+
+		if [ -n "$router" ] ; then
+			echo "deleting routers"
+			while /sbin/route del default gw 0.0.0.0 dev $interface ; do
+				:
+			done
+
+			for i in $router ; do
+				/sbin/route add default gw $i dev $interface
+				echo "ROUTER=$i" >> $VAR_FILE
+			done
+		fi
+
+		echo -n > $RESOLV_CONF
+		[ -n "$domain" ] && echo search $domain >> $RESOLV_CONF
+		for i in $dns ; do
+			echo adding dns $i
+			echo nameserver $i >> $RESOLV_CONF
+			echo "DNS=$i" >> $VAR_FILE
+		done
+		;;
+esac
+
+exit 0

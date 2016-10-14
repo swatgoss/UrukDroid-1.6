@@ -1,0 +1,5 @@
+service logcats /system/bin/logcat -f /data/test/logcat.log -r 512 -v time
+    oneshot
+
+on init
+    exec /system/bin/logwrapper cat /proc/kmsg

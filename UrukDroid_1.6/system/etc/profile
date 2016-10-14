@@ -1,0 +1,10 @@
+export PATH=\
+/bin:\
+/sbin:\
+/usr/bin:\
+/usr/sbin:\
+/opt/usr/bin:\
+/opt/usr/sbin:\
+/usr/local/bin
+
+export LD_LIBRARY_PATH=/opt/usr/lib

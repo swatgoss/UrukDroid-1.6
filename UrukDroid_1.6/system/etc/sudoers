@@ -1,0 +1,8 @@
+#
+#
+User_Alias TETHER = tether
+Cmnd_Alias MODPROBE = /usr/local/sbin/modprobe
+
+root	ALL = (ALL) ALL
+
+TETHER	ALL = NOPASSWD: MODPROBE

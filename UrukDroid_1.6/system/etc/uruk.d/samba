@@ -1,0 +1,80 @@
+#!/bin/sh
+#
+#### Information
+#  Ver: 1.1 (28.07.2011)
+#   By: Adrian (Sauron) Siemieniak
+# Desc: Start Samba (smbd) server
+####
+
+URUKCONFIG=/etc/uruk.conf/samba
+
+. /etc/uruk.d/service-common.sh
+
+PIDDIR=/var/run/samba
+NMBDPID=$PIDDIR/nmbd.pid
+SMBD_PID=$PIDDIR/smbd.pid
+
+# This function should return in every status script
+# 1: service is running
+# 0: service is not running
+service_status(){
+	if [ -f $SMBD_PID ]; then
+		pid=`cat $SMBD_PID`
+# Check if such a process exists for real
+		if [ -d "/proc/"$pid ]; then
+			return 1
+		else
+			rm $SMBD_PID
+			return 0
+		fi
+	else
+		return 0
+	fi
+}
+
+case "$1" in
+	start)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "Uruk-Samba: Samba server is already running."
+			exit 1
+		else
+			echo -n "Uruk-Samba: Starting Samba server..."
+			/usr/local/sbin/smbd -D
+			echo "Done"
+		fi
+		;;
+	stop)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo -n "Uruk-Samba: Stoping Samba server..."
+			kill -SIGTERM `cat $SMBD_PID`
+			echo "Done"
+		else
+			echo "Uruk-Samba: Samba server is not running."
+			exit 1
+		fi
+		;;
+	status)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "Uruk-Samba: Enabled"
+		else
+			echo "Uruk-Samba: Disabled"
+		fi
+		;;
+	UIstatus)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "on"
+		else
+			echo "off"
+		fi
+		;;
+	*|"")
+		echo "Uruk-Droid Samba service"
+		echo "Usage: samba {start|stop|status}"
+		exit 1
+		;;
+esac
+

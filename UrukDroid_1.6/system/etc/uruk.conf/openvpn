@@ -1,0 +1,17 @@
+# Part of Uruk-Droid Android configuration system
+#
+# ver. 1.1 (18.02.2011) Adrian (Sauron) Siemieniak
+#
+
+# 1 to enable this service
+# 0 to disable this service
+service_enabled=0
+
+#OPENVPN_BIN="/usr/local/sbin/openvpn"
+OPENVPN_BIN="/system/xbin/openvpn"
+
+OPENVPN_PID="/var/run/openvpn.pid"
+OPENVPN_STATUS="/var/run/openvpn.status"
+OPENVPN_PATH="/etc/openvpn"
+OPENVPN_CFG="/etc/openvpn/archos.conf"
+

@@ -1,0 +1,16 @@
+#!/bin/sh
+#
+# UrukDroid reboot script
+#
+
+
+# Check wheter argument is a number...
+if [ ! -z "${1##*[!0-9]*}" ]; then
+        sleep $1
+fi
+
+/etc/init.d/rcK 
+
+# Do reboot
+/system/bin/toolbox reboot
+

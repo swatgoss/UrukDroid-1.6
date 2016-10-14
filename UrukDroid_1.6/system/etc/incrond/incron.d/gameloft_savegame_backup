@@ -1,0 +1,2 @@
+/mnt/storage/gameloft/games/DungeonHunter/ IN_CLOSE_WRITE /system/xbin/gameloft_backup.sh DungeonHunter $@ $#
+/mnt/storage/gameloft/hos/ IN_CLOSE_WRITE /system/xbin/gameloft_backup.sh HeroOfSparta $@ $#

@@ -1,0 +1,100 @@
+#!/bin/sh
+#
+# UrukDroid service system
+#
+#### Information
+#  Ver: 1.1 (20.03.2011)
+#   By: Adrian (Sauron) Siemieniak
+# Desc: Incrond (inotify cron) is a service, reacting on file system changes. It's like cron, but triggered not by time but with filesystem changes.
+####
+
+URUKCONFIG=/etc/uruk.conf/incrond
+
+if [ -f $URUKCONFIG ]; then
+        . $URUKCONFIG
+else
+	echo "No required config file in $URUKCONFIG"
+	exit 1
+fi
+
+# Check is service is enabled at all
+if [ $service_enabled -ne 1 -a "$2" != "force" ]; then
+	echo "Uruk-InCrond: This module is disabled in $URUKCONFIG"
+	exit 1
+fi
+
+PIDDIR=/var/run/
+INCROND_PID=$PIDDIR/incrond.pid
+INCROND_CONFIG=/etc/incrond/incron.conf
+
+# This function should return in every status script
+# 1: service is running
+# 0: service is not running
+service_status(){
+	if [ -f $INCROND_PID ]; then
+		pid=`cat $INCROND_PID`
+# Check if such a process exists for real
+		if [ -d "/proc/"$pid ]; then
+			return 1
+		else
+			rm $INCROND_PID
+			return 0
+		fi
+	else
+		return 0
+	fi
+}
+
+case "$1" in
+	start)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "Uruk-InCrond: Server InCrond is already running"
+			exit 1
+		fi
+		if [ ! -d /data/UrukUpdate ]; then
+			mkdir /data/UrukUpdate
+			chmod 0777 /data/UrukUpdate
+		fi
+		echo -n "Uruk-InCrond: Starting InCrond server..."
+		/usr/local/sbin/incrond -f $INCROND_CONFIG
+		echo "Done"
+		;;
+	stop)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo -n "Uruk-InCrond: Stoping InCrond server..."
+			/usr/local/sbin/incrond -f $INCROND_CONFIG -k >/dev/null 2>&1
+			echo "Done"
+		else
+			echo "Uruk-InCrond: InCrond server is not running."
+		fi
+		;;
+	restart)
+		/etc/uruk.d/incrond stop $2
+		sleep 1
+		/etc/uruk.d/incrond start $2
+                ;;
+	status)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "Uruk-InCrond: Running"
+		else
+			echo "Uruk-InCrond: Stoped"
+		fi
+		;;
+	UIstatus)
+		service_status
+		if [ $? -eq 1 ]; then
+			echo "on"
+		else
+			echo "off"
+		fi
+		;;
+	*|"")
+		echo "Uruk-Droid InCrond service"
+		echo "Usage: incrond {start|stop|status}"
+		exit 1
+		;;
+esac
+

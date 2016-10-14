@@ -1,0 +1,24 @@
+# Part of Uruk-Droid Android configuration system
+#
+# ver. 1.2 (26.04.2011) Adrian (Sauron) Siemieniak
+#
+
+# 1 to enable this service
+# 0 to disable this service
+service_enabled=0
+
+# Where to store device information
+dvb_devices_conf="/etc/uruk.conf/dvb-devices"
+
+# DVB card type
+# Working USB DVB devices
+# 1. (dvb-usb-af9005) Afatech AF9005 DVB-T USB1.1 support
+# 2. (dvb-usb-dib0700) DiBcom DiB0700 USB DVB devices (see help for supported devices)
+#dvb_driver='dvb-usb-dib0700'
+# 3. (dvb-usb-af9015) Afatech AF9015 DVB-T USB2.0 support
+# 4. (dvb-usb-cinergyT2) Terratec CinergyT2/qanu USB 2.0 DVB-T receiver
+# 5. (smsusb) Siano SMS1XXX USB dongle support
+# 6. (dvb-usb-ec168) EC168 USB dongle support
+#dvb_driver='dvb-usb-ec168'
+# 7. (xc5000) WinTV-HVR-950Q dongle support
+dvb_driver="xc5000"
